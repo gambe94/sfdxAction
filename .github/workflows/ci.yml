@@ -20,7 +20,7 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: |
-            creds.json
+            cred.json
           key: ${{ runner.os }}-${{ hashFiles('creds.json') }}
       # - uses: actions/download-artifact@v3
       #   with:
