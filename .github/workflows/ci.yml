@@ -18,6 +18,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       # Creates file "$/files.json", among others
+      - uses: actions/download-artifact@v3
+        with:
+          name: scratch-cred
+      - name: Debug creds
+        run: |
+          ls -la
+          cat creds.json
+
       - name: Create scratch Org
         run: |
           whoami
@@ -52,16 +60,16 @@ jobs:
           path: cred.json
       - name: Run tests
         run: |
-          sfdx force:apex:test:run --codecoverage \ 
-            --outputdir=testResult \
+          sfdx force:apex:test:run --codecoverage --outputdir=testResult \
             --testlevel=RunLocalTests \
-            --resultformat=junit 
-            --detailedcoverage
+            --resultformat=human \
+            --detailedcoverage \
+            -u GaborSC
       - name: Archive testResult
         uses: actions/upload-artifact@v3
         with:
           name: testResult
-          path: testResult/**
+          path: testResult/*junit.xml
 
 
 
