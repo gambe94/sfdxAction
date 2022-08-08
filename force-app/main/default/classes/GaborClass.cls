@@ -6,4 +6,7 @@ public with sharing class GaborClass {
 	public static String greetUser(String user) {
 		return 'Hello ' + user;
 	}
+	public static String byeUser(String user) {
+		return 'Bye ' + user;
+	}
 }
