@@ -32,9 +32,9 @@ jobs:
       - name: Debug creds
         run: |
           ls -la
-          ls ${{ github.workspace }}/root/.local/share -la
-          
-
+               
+      
+      
       - name: Dump GitHub context
         run: echo '${{ toJSON(github) }}'
       - name: Dump job context
