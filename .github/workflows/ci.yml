@@ -12,7 +12,7 @@ jobs:
       image: docker://gambe94/sfdx:1.0.0
       credentials:
         username: 'gambe94'
-        password: {{secrets.DOCKER_TOKEN}}
+        password: ${{ secrets.DOCKER_TOKEN }}
 
     steps:
       - name: Checkout
@@ -22,7 +22,7 @@ jobs:
         run: |
           sfdx force:auth:jwt:grant --clientid $PROD_CONSUMERKEY --jwtkeyfile .certificate/server.key --username $PROD_USERNAME --setdefaultdevhubusername -a HubOrg
         env:
-          PROD_CONSUMERKEY: {{secrets.PROD_CONSUMERKEY}}
-          PROD_USERNAME: {{secrets.PROD_USERNAME}}
+          PROD_CONSUMERKEY: ${{ secrets.PROD_CONSUMERKEY }}
+          PROD_USERNAME: ${{ secrets.PROD_USERNAME }}
 
 
