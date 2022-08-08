@@ -36,6 +36,10 @@ jobs:
           
           sfdx force:org:display --targetusername GaborSC --verbose --json | \
             jq '{username: .result.username, password: .result.password, instanceUrl: .result.instanceUrl}' > cred.json
+          
+          sfdx force:source:push -f
+        
+        
 
         env:
           PROD_CONSUMERKEY: ${{ secrets.PROD_CONSUMERKEY }}
@@ -46,6 +50,18 @@ jobs:
         with:
           name: scratch-cred
           path: cred.json
+      - name: Run tests
+        run: |
+          sfdx force:apex:test:run --codecoverage \ 
+            --outputdir=testResult \
+            --testlevel=RunLocalTests \
+            --resultformat=junit 
+            --detailedcoverage
+      - name: Archive testResult
+        uses: actions/upload-artifact@v3
+        with:
+          name: testResult
+          path: testResult/**
 
 
 

@@ -7,6 +7,7 @@
           <option name="connectionName" value="GaborPersonalDev" />
           <option name="connectionType" value="OAUTH" />
           <option name="defaultModuleName" value="sfdxAction" />
+          <option name="offlineSymbolTablePath" value="$PROJECT_DIR$/IlluminatedCloud/GaborPersonalDev/OfflineSymbolTable.zip" />
         </IlluminatedCloudConnection>
       </list>
     </option>

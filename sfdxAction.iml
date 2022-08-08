@@ -22,7 +22,7 @@
       <excludeFolder url="file://$MODULE_DIR$/.sfdx/tools/sobjects" />
       <excludeFolder url="file://$MODULE_DIR$/.sfdx/typings" />
     </content>
-    <orderEntry type="jdk" jdkName="IlluminatedCloud (sfdxAction/EburyGaborDev)" jdkType="IlluminatedCloud" />
+    <orderEntry type="jdk" jdkName="IlluminatedCloud (sfdxAction/GaborPersonalDev)" jdkType="IlluminatedCloud" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
