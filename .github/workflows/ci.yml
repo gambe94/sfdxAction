@@ -20,6 +20,9 @@ jobs:
       # Creates file "$/files.json", among others
       - name: Create scratch Org
         run: |
+          whoami
+          sfdx --version
+          sfdx plugins
           sfdx force:auth:jwt:grant --clientid $PROD_CONSUMERKEY --jwtkeyfile .certificate/server.key --username $PROD_USERNAME --setdefaultdevhubusername -a HubOrg
         env:
           PROD_CONSUMERKEY: ${{ secrets.PROD_CONSUMERKEY }}
