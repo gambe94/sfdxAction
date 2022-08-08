@@ -9,12 +9,10 @@ jobs:
   dev-flow:
     runs-on: ubuntu-latest
     container:
-      image: docker://gambe94/sfdx:4.0.0
+      image: docker://gambe94/sfdx:2.0.0
       credentials:
         username: "gambe94"
         password: ${{ secrets.DOCKER_TOKEN }}
-      volumes:
-        - ${{ github.workspace }}/root/.local/share:/root/.local/share
 
     steps:
       - name: Checkout
