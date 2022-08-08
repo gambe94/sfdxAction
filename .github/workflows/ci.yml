@@ -112,6 +112,7 @@ jobs:
 
       - name: Run tests
         run: |
+          sfdx plugins
           sfdx force:apex:test:run --codecoverage --outputdir=testResult \
             --testlevel=RunLocalTests \
             --resultformat=human \
