@@ -56,6 +56,8 @@ jobs:
 
            sfdx force:org:display --targetusername GaborSC --verbose --json | \
                  jq '{username: .result.username, password: .result.password, instanceUrl: .result.instanceUrl}' > cred.json
+          
+          sfdx force:source:push -f
 
         env:
           PROD_CONSUMERKEY: ${{ secrets.PROD_CONSUMERKEY }}

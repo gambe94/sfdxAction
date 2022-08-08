@@ -10,4 +10,10 @@ private class GaborClassTest {
 		String result = GaborClass.greetUser(user);
 		System.assertEquals('Hello ' + user, result);
 	}
+	@IsTest
+	static void testNegativBehavior() {
+		String user = 'Gabor';
+		String result = GaborClass.greetUser(user);
+		System.assertEquals('Hell ' + user, result);
+	}
 }
