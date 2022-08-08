@@ -21,13 +21,21 @@ jobs:
         with:
           path: |
             cred.json
-          key: ${{ runner.os }}-${{ hashFiles('creds.json') }}
+          key: ${{ github.ref }}-${{ hashFiles('creds.json') }}
       # - uses: actions/download-artifact@v3
       #   with:
       #     name: scratch-cred
       - name: Debug creds
         run: |
           ls -la
+          
+
+      - name: Dump GitHub context
+        run: echo '${{ toJSON(github) }}'
+      - name: Dump job context
+        run: echo '${{ toJSON(job) }}'
+
+
 
       - name: Create scratch Org
         run: |
