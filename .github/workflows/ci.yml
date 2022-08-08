@@ -9,10 +9,12 @@ jobs:
   dev-flow:
     runs-on: ubuntu-latest
     container:
-      image: docker://gambe94/sfdx:2.0.0
+      image: docker://gambe94/sfdx:4.0.0
       credentials:
         username: "gambe94"
         password: ${{ secrets.DOCKER_TOKEN }}
+      volumes:
+        - ${{ github.workspace }}/root/.local/share:/root/.local/share
 
     steps:
       - name: Checkout
@@ -30,8 +32,9 @@ jobs:
       - name: Debug creds
         run: |
           ls -la
-          
-
+               
+      
+      
       - name: Dump GitHub context
         run: echo '${{ toJSON(github) }}'
       - name: Dump job context
@@ -42,6 +45,7 @@ jobs:
       - name: Create scratch Org
         if: steps.cache_scratchOrg_cred.outputs.cache-hit != 'true'
         run: |
+          export HOME=/root
           whoami
           sfdx --version
           sfdx plugins
@@ -84,8 +88,14 @@ jobs:
           path: cred.json
 
       - name: Login scratch Org
-        if: steps.cache_scratchOrg_cred.outputs.cache-hit != 'true'
+        if: steps.cache_scratchOrg_cred.outputs.cache-hit == 'true'
         run: |
+          whoami
+          echo "y" | sfdx plugins:install sfdx-git-delta
+          pwd
+          ls /root/.local/share
+          sfdx --version
+          sfdx plugins
           sfdx force:auth:jwt:grant --clientid $PROD_CONSUMERKEY \
           --jwtkeyfile ./certificate/server.key \
           --username test-wreywwy0nmvn@example.com \
@@ -102,6 +112,7 @@ jobs:
 
       - name: Run tests
         run: |
+          sfdx plugins
           sfdx force:apex:test:run --codecoverage --outputdir=testResult \
             --testlevel=RunLocalTests \
             --resultformat=human \
@@ -120,23 +131,3 @@ jobs:
         with:
           report_paths: 'testResult/*junit.xml'
 
-
-      - name: Code Coverage Report
-        uses: irongut/CodeCoverageSummary@v1.3.0
-        with:
-          filename: testResult/test-result-*-codecoverage.json
-          badge: true
-          fail_below_min: true
-          format: markdown
-          hide_branch_rate: false
-          hide_complexity: true
-          indicators: true
-          output: both
-          thresholds: '60 80'
-
-      - name: Add Coverage PR Comment
-        uses: marocchino/sticky-pull-request-comment@v2
-        if: github.event_name == 'pull_request'
-        with:
-          recreate: true
-          path: code-coverage-results.md

@@ -11,9 +11,9 @@ private class GaborClassTest {
 		System.assertEquals('Hello ' + user, result);
 	}
 	@IsTest
-	static void testNegativBehavior() {
+	static void byeUser() {
 		String user = 'Gabor';
-		String result = GaborClass.greetUser(user);
-//		System.assertEquals('Hell ' + user, result);
+		String result = GaborClass.byeUser(user);
+		System.assertEquals('Bye ' + user, result);
 	}
 }
