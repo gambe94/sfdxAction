@@ -8,15 +8,21 @@ on:
 jobs:
   dev-flow:
     runs-on: ubuntu-latest
+    container:
+      image: 'docker://gambe94/sfdx:1.0.0'
+        credentials:
+          username: 'gambe94'
+          password: {{secrets.DOCKER_TOKEN}}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       # Creates file "$/files.json", among others
-      - name: Gather files changed
-        uses: trilom/file-changes-action@a6ca26c14274c33b15e6499323aac178af06ad4b
-        with:
-          fileOutput: 'json'
+      - name: Create scratch Org
+        run: |
+          sfdx force:auth:jwt:grant --clientid $PROD_CONSUMERKEY --jwtkeyfile .certificate/server.key --username $PROD_USERNAME --setdefaultdevhubusername -a HubOrg
+        env:
+          PROD_CONSUMERKEY: {{secrets.PROD_CONSUMERKEY}}
+          PROD_USERNAME: {{secrets.PROD_USERNAME}}
 
-        # For verification
-      - name: Show files changed
-        run: cat $HOME/files.json
+
