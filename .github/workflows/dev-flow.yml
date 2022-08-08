@@ -3,8 +3,8 @@ on:
   pull_request:
     branches:
       - "feature/**"
-    paths:
-      - "force-app/**"
+#    paths:
+#      - "force-app/**"
 jobs:
   login:
     runs-on: ubuntu-latest
