@@ -27,10 +27,29 @@ jobs:
               --jwtkeyfile ./certificate/server.key \
               --username $PROD_USERNAME \
               --setdefaultdevhubusername \
-              -a $PROD_ALIAS
+              --setalias=$PROD_ALIAS
+          
+          sfdx force:org:create \
+            --setdefaultusername \
+            --definitionfile=config/project-scratch-def.json \
+            --durationdays 2 \
+            --setalias=GaborSC \
+            orgName=GaborOrg 
+          
+          sfdx force:user:password:generate --targetusername GaborSC
+          
+          sfdx force:org:display --targetusername GaborSC --verbose --json | \
+            jq '{username: .result.username, password: .result.password, instanceUrl: .result.instanceUrl}' > creds.json
+
         env:
           PROD_CONSUMERKEY: ${{ secrets.PROD_CONSUMERKEY }}
           PROD_USERNAME: ${{ secrets.PROD_USERNAME }}
           PROD_ALIAS: 'EburyHub'
+      - name: Archive credentials
+        uses: actions/upload-artifact@v3
+        with:
+          name: scratch-cred
+          path: cred.json
+
 
 
