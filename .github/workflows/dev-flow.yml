@@ -1,0 +1,76 @@
+name: Dev flow
+on:
+  pull_request:
+    branches:
+      - "feature/**"
+jobs:
+  login:
+    runs-on: ubuntu-latest
+    container:
+      image: docker://gambe94/sfdx:2.0.0
+      credentials:
+        username: "gambe94"
+        password: ${{ secrets.DOCKER_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - run: |
+          echo "Hello form login"
+          ls -la
+
+  create-scratch-org:
+    runs-on: ubuntu-latest
+    needs: [ login ]
+    container:
+      image: docker://gambe94/sfdx:2.0.0
+      credentials:
+        username: "gambe94"
+        password: ${{ secrets.DOCKER_TOKEN }}
+    steps:
+      - run: |
+          echo "Hello form create scratch"
+          ls -la
+
+  Run-Test:
+    runs-on: ubuntu-latest
+    needs: [ create-scratch-org ]
+    container:
+      image: docker://gambe94/sfdx:2.0.0
+      credentials:
+        username: "gambe94"
+        password: ${{ secrets.DOCKER_TOKEN }}
+    steps:
+      - run: |
+          echo "Hello form run test"
+          ls -la
+
+  PMD:
+    runs-on: ubuntu-latest
+    container:
+      image: docker://gambe94/sfdx:2.0.0
+      credentials:
+        username: "gambe94"
+        password: ${{ secrets.DOCKER_TOKEN }}
+    steps:
+      - run: |
+          echo "Hello form PMD"
+          ls -la
+
+  ESLint:
+    runs-on: ubuntu-latest
+    container:
+      image: docker://gambe94/sfdx:2.0.0
+      credentials:
+        username: "gambe94"
+        password: ${{ secrets.DOCKER_TOKEN }}
+    steps:
+      - run: |
+          'RUN ESLINT'
+
+  Prittier:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          'RUN Pritter'
