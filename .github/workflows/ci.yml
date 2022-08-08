@@ -19,6 +19,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
       - name: Cache scratchOrg cred
         id: cache_scratchOrg_cred
         uses: actions/cache@v3
@@ -101,6 +104,23 @@ jobs:
           PROD_USERNAME: ${{ secrets.PROD_USERNAME }}
           PROD_ALIAS: "EburyHub"
 
+      - name: Generate dif
+        run: |
+          echo "y" | sfdx plugins:install sfdx-git-delta
+          
+           //Based on the diff we will create test suite.
+            mkdir -p generatedDiff
+            MERGE_BASE=$(git merge-base HEAD  origin/${{ github.base_ref }})
+            sfdx sgd:source:delta --from ${MERGE_BASE} --to HEAD --output generatedDiff --generate-delta
+            ls generatedDiff -la
+          
+          
+          
+          sfdx force:apex:test:run --codecoverage --outputdir=testResult \
+            --testlevel=RunLocalTests \
+            --resultformat=human \
+            --detailedcoverage \
+            -u GaborSC
 
       - name: Run tests
         run: |
