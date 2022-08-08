@@ -87,7 +87,6 @@ jobs:
       - name: Login scratch Org
         if: steps.cache_scratchOrg_cred.outputs.cache-hit == 'true'
         run: |
-          export HOME=/root
           whoami
           sfdx --version
           sfdx plugins
