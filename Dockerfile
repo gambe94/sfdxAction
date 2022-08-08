@@ -3,6 +3,7 @@
 FROM ubuntu:18.04
 
 ENV SFDX_AUTOUPDATE_DISABLE=true
+ENV SFDX_CONTAINER_MODE=true
 
 RUN apt-get update && apt-get install -y \
   wget \
