@@ -66,10 +66,10 @@ jobs:
         password: ${{ secrets.DOCKER_TOKEN }}
     steps:
       - run: |
-          'RUN ESLINT'
+          echo 'hello eslint'
 
   Prittier:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          'RUN Pritter'
+          echo 'hello prettier'
