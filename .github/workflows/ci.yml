@@ -29,12 +29,8 @@ jobs:
               --setdefaultdevhubusername \
               --setalias=$PROD_ALIAS
           
-          sfdx force:org:create \
-            --setdefaultusername \
-            --definitionfile=config/project-scratch-def.json \
-            --durationdays 2 \
-            --setalias=GaborSC \
-            orgName=GaborOrg 
+          sfdx force:org:create --setdefaultusername --definitionfile=config/project-scratch-def.json \
+            --durationdays=2  --setalias=GaborSC
           
           sfdx force:user:password:generate --targetusername GaborSC
           
