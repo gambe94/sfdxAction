@@ -32,6 +32,7 @@ jobs:
       - name: Debug creds
         run: |
           ls -la
+          ls $HOME/.local/share/sfdx/node_modules/ -la
           
 
       - name: Dump GitHub context
