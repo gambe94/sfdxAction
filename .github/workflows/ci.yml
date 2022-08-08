@@ -14,7 +14,7 @@ jobs:
         username: "gambe94"
         password: ${{ secrets.DOCKER_TOKEN }}
       volumes:
-        - ${{ github.workspace }}/root/.local/share:$HOME/.local/share
+        - ${{ github.workspace }}/.local/share:$HOME/.local/share
 
     steps:
       - name: Checkout
