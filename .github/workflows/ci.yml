@@ -90,6 +90,9 @@ jobs:
         if: steps.cache_scratchOrg_cred.outputs.cache-hit == 'true'
         run: |
           whoami
+          echo "y" | sfdx plugins:install sfdx-git-delta
+          pwd
+          ls /root/.local/share
           sfdx --version
           sfdx plugins
           sfdx force:auth:jwt:grant --clientid $PROD_CONSUMERKEY \
