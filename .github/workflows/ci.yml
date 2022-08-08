@@ -28,26 +28,31 @@ jobs:
 
       - name: Create scratch Org
         run: |
-          whoami
-          sfdx --version
-          sfdx plugins
-          sfdx force:auth:jwt:grant --clientid $PROD_CONSUMERKEY \
-              --jwtkeyfile ./certificate/server.key \
-              --username $PROD_USERNAME \
-              --setdefaultdevhubusername \
-              --setalias=$PROD_ALIAS
-          
-          sfdx force:org:create --setdefaultusername --definitionfile=config/project-scratch-def.json \
-            --durationdays=2  --setalias=GaborSC
-          
-          sfdx force:user:password:generate --targetusername GaborSC
-          
-          sfdx force:org:display --targetusername GaborSC --verbose --json | \
-            jq '{username: .result.username, password: .result.password, instanceUrl: .result.instanceUrl}' > cred.json
-          
-          sfdx force:source:push -f
-        
-        
+               whoami
+               sfdx --version
+               sfdx plugins
+          #          sfdx force:auth:jwt:grant --clientid $PROD_CONSUMERKEY \
+          #              --jwtkeyfile ./certificate/server.key \
+          #              --username $PROD_USERNAME \
+          #              --setdefaultdevhubusername \
+          #              --setalias=$PROD_ALIAS
+          #
+          #          sfdx force:org:create --setdefaultusername --definitionfile=config/project-scratch-def.json \
+          #            --durationdays=2  --setalias=GaborSC
+          #
+          #          sfdx force:user:password:generate --targetusername GaborSC
+          #
+          #          sfdx force:org:display --targetusername GaborSC --verbose --json | \
+          #            jq '{username: .result.username, password: .result.password, instanceUrl: .result.instanceUrl}' > cred.json
+          #
+          #          sfdx force:source:push -f
+               
+               sfdx force:auth:jwt:grant --clientid $PROD_CONSUMERKEY \
+               --jwtkeyfile ./certificate/server.key \
+               --username test-wreywwy0nmvn@example.com \
+               --instanceurl=https://power-page-8078-dev-ed.my.salesforce.com \
+               --setdefaultdevhubusername \
+               --setalias=GaborSC
 
         env:
           PROD_CONSUMERKEY: ${{ secrets.PROD_CONSUMERKEY }}
