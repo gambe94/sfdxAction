@@ -51,13 +51,13 @@ jobs:
           --jwtkeyfile ./certificate/server.key \
           --username test-wreywwy0nmvn@example.com \
           --instanceurl=https://power-page-8078-dev-ed.my.salesforce.com \
-          --setdefaultdevhubusername \
+          --setdefaultusername \
           --setalias=GaborSC
 
            sfdx force:org:display --targetusername GaborSC --verbose --json | \
                  jq '{username: .result.username, password: .result.password, instanceUrl: .result.instanceUrl}' > cred.json
           
-          sfdx force:source:push -f
+          sfdx force:source:push -f -u GaborSC
 
         env:
           PROD_CONSUMERKEY: ${{ secrets.PROD_CONSUMERKEY }}
