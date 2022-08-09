@@ -115,6 +115,7 @@ jobs:
       - name: Login scratch Org
         if: steps.cache_scratchOrg_cred.outputs.cache-hit == 'true'
         run: |
+          sfdx plugins
           sfdx force:auth:jwt:grant --clientid $PROD_CONSUMERKEY \
           --jwtkeyfile ./certificate/server.key \
           --username test-wreywwy0nmvn@example.com \
