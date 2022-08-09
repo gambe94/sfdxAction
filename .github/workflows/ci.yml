@@ -9,7 +9,7 @@ jobs:
   dev-flow:
     runs-on: ubuntu-latest
     container:
-      image: docker://gambe94/sfdx:2.0.0
+      image: docker://gambe94/sfdx:2.0.1
       credentials:
         username: "gambe94"
         password: ${{ secrets.DOCKER_TOKEN }}
@@ -42,8 +42,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Link plugins
-        run: sfdx plugins:link node_modules/sfdx-git-delta
+      - name: Check plugins
+        run: sfdx plugins
 
 
       - name: Cache scratchOrg cred
