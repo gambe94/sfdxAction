@@ -29,7 +29,6 @@ jobs:
     if: contains(github.ref,'refs/heads/main')
     environment:
       name: production
-    needs: UAT
 
     steps:
       - uses: actions/checkout@v2
