@@ -43,3 +43,6 @@ $RECYCLE.BIN/
 /IlluminatedCloud/
 /out/
 target/
+
+base64 -i certificate/server.key > certificate/server.key.base64
+gh secret set PROD_JWT_TOKEN < certificate/server.key.base64
