@@ -118,7 +118,7 @@ jobs:
           sfdx plugins
           echo ${{ secrets.PORD_JWT_KEY }} > mykey.key
           sfdx force:auth:jwt:grant --clientid $PROD_CONSUMERKEY \
-          --jwtkeyfile mykey.key \
+          --jwtkeyfile ./mykey.key \
           --username test-wreywwy0nmvn@example.com \
           --instanceurl=https://power-page-8078-dev-ed.my.salesforce.com \
           --setdefaultusername \
