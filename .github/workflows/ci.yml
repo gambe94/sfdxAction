@@ -75,7 +75,7 @@ jobs:
           sfdx --version
           sfdx plugins
                # sfdx force:auth:jwt:grant --clientid $PROD_CONSUMERKEY \
-               #     --jwtkeyfile ./certificate/server.key \
+               #     --jwtkeyfile ${{ secrets.PORD_JWT_KEY }} \
                #     --username $PROD_USERNAME \
                #     --setdefaultdevhubusername \
                #     --setalias=$PROD_ALIAS
@@ -91,7 +91,7 @@ jobs:
                # sfdx force:source:push -f
 
           sfdx force:auth:jwt:grant --clientid $PROD_CONSUMERKEY \
-          --jwtkeyfile ./certificate/server.key \
+          --jwtkeyfile ${{ secrets.PORD_JWT_KEY }} \
           --username test-wreywwy0nmvn@example.com \
           --instanceurl=https://power-page-8078-dev-ed.my.salesforce.com \
           --setdefaultusername \
@@ -117,7 +117,7 @@ jobs:
         run: |
           sfdx plugins
           sfdx force:auth:jwt:grant --clientid $PROD_CONSUMERKEY \
-          --jwtkeyfile ./certificate/server.key \
+          --jwtkeyfile ${{ secrets.PORD_JWT_KEY }} \
           --username test-wreywwy0nmvn@example.com \
           --instanceurl=https://power-page-8078-dev-ed.my.salesforce.com \
           --setdefaultusername \
