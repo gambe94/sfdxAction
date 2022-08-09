@@ -26,7 +26,7 @@ jobs:
 
   PROD:
     runs-on: ubuntu-latest
-    if: contains(github.ref,'refs/heads/release')
+    if: contains(github.ref,'refs/heads/main')
     environment:
       name: production
     needs: UAT
