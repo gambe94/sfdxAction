@@ -89,9 +89,9 @@ jobs:
                #   jq '{username: .result.username, password: .result.password, instanceUrl: .result.instanceUrl}' > cred.json
 
                # sfdx force:source:push -f
-          echo $PORD_JWT_KEY_BASE64 | base64 --decode > mykey.key
+          
           sfdx force:auth:jwt:grant --clientid $PROD_CONSUMERKEY \
-          --jwtkeyfile mykey.key \
+          --jwtkeyfile certificate/server.key \
           --username test-wreywwy0nmvn@example.com \
           --instanceurl=https://power-page-8078-dev-ed.my.salesforce.com \
           --setdefaultusername \
@@ -118,10 +118,10 @@ jobs:
         if: steps.cache_scratchOrg_cred.outputs.cache-hit == 'true'
         run: |
           sfdx plugins
-          echo $PORD_JWT_KEY_BASE64 | base64 --decode > mykey.key
+          
           
           sfdx force:auth:jwt:grant --clientid $PROD_CONSUMERKEY \
-          --jwtkeyfile mykey.key \
+          --jwtkeyfile certificate/server.key \
           --username test-wreywwy0nmvn@example.com \
           --instanceurl=https://power-page-8078-dev-ed.my.salesforce.com \
           --setdefaultusername \
