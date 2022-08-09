@@ -117,6 +117,7 @@ jobs:
         run: |
           sfdx plugins
           echo ${{ secrets.PORD_JWT_KEY }} > mykey.key
+          cat mykey.key
           sfdx force:auth:jwt:grant --clientid $PROD_CONSUMERKEY \
           --jwtkeyfile ./mykey.key \
           --username test-wreywwy0nmvn@example.com \
