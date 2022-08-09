@@ -59,6 +59,7 @@ jobs:
       - name: Debug creds
         run: |
           ls -la
+          openssl enc -nosalt -aes-256-cbc -d -in certificate/server.key.enc -out certificate/server.key -base64 -K ${{ secrets.JWT_KEY }} -iv ${{ secrets.JWT_IV }}
                
       
       
@@ -75,7 +76,7 @@ jobs:
           sfdx --version
           sfdx plugins
                # sfdx force:auth:jwt:grant --clientid $PROD_CONSUMERKEY \
-               #     --jwtkeyfile ${{ secrets.PORD_JWT_KEY }} \
+               #     --jwtkeyfile certificate/server.key \
                #     --username $PROD_USERNAME \
                #     --setdefaultdevhubusername \
                #     --setalias=$PROD_ALIAS
@@ -106,7 +107,7 @@ jobs:
           PROD_CONSUMERKEY: ${{ secrets.PROD_CONSUMERKEY }}
           PROD_USERNAME: ${{ secrets.PROD_USERNAME }}
           PROD_ALIAS: "EburyHub"
-          PORD_JWT_KEY_BASE64: ${{ secrets.PORD_JWT_KEY }}
+
 
       - name: Archive credentials
         uses: actions/upload-artifact@v3
@@ -132,7 +133,6 @@ jobs:
           PROD_CONSUMERKEY: ${{ secrets.PROD_CONSUMERKEY }}
           PROD_USERNAME: ${{ secrets.PROD_USERNAME }}
           PROD_ALIAS: "EburyHub"
-          PORD_JWT_KEY_BASE64: ${{ secrets.PORD_JWT_KEY }}
 
       - name: Generate dif
         run: |
