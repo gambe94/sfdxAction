@@ -91,7 +91,7 @@ jobs:
                # sfdx force:source:push -f
 
           sfdx force:auth:jwt:grant --clientid $PROD_CONSUMERKEY \
-          --jwtkeyfile ${{ secrets.PORD_JWT_KEY }} \
+          --jwtkeyfile $.PORD_JWT_KEY \
           --username test-wreywwy0nmvn@example.com \
           --instanceurl=https://power-page-8078-dev-ed.my.salesforce.com \
           --setdefaultusername \
@@ -106,6 +106,8 @@ jobs:
           PROD_CONSUMERKEY: ${{ secrets.PROD_CONSUMERKEY }}
           PROD_USERNAME: ${{ secrets.PROD_USERNAME }}
           PROD_ALIAS: "EburyHub"
+          PORD_JWT_KEY: ${{ secrets.PORD_JWT_KEY }}
+
       - name: Archive credentials
         uses: actions/upload-artifact@v3
         with:
@@ -116,7 +118,7 @@ jobs:
         if: steps.cache_scratchOrg_cred.outputs.cache-hit == 'true'
         run: |
           sfdx plugins
-          echo ${{ secrets.PORD_JWT_KEY }} > mykey.key
+          echo $PORD_JWT_KEY} > mykey.key
           cat mykey.key
           sfdx force:auth:jwt:grant --clientid $PROD_CONSUMERKEY \
           --jwtkeyfile ./mykey.key \
@@ -130,6 +132,7 @@ jobs:
           PROD_CONSUMERKEY: ${{ secrets.PROD_CONSUMERKEY }}
           PROD_USERNAME: ${{ secrets.PROD_USERNAME }}
           PROD_ALIAS: "EburyHub"
+          PORD_JWT_KEY: ${{ secrets.PORD_JWT_KEY }}
 
       - name: Generate dif
         run: |
