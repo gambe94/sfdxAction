@@ -1,0 +1,42 @@
+name: 'CD Pipeline - User Triggered'
+
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  UAT:
+    runs-on: ubuntu-latest
+    if: contains(github.ref,'refs/heads/staging')
+    environment:
+      name: staging
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+
+      - name: Authenticate to UAT
+        run: |
+          echo "Hello UAT"
+
+
+
+  PROD:
+    runs-on: ubuntu-latest
+    if: contains(github.ref,'refs/heads/release')
+    environment:
+      name: production
+    needs: UAT
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+
+      - name: Authenticate to PROD
+        run: |
+          echo "Hello Prod"
