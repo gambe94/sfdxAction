@@ -25,13 +25,10 @@ jobs:
       - init
     runs-on: ubuntu-latest
     if: needs.init.steps.cache_scratchOrg_cred.outputs.cache-hit != 'true'
-    steps:
-      - name: Create scratch Org
-        uses: gambe94/sfdxAction/.github/workflows/createScratchOrg.yml@main
-        id: create_scratch_org
-        with:
-          sc_name: ${{ github.ref }}
-          sc_duration: 2
+    uses: gambe94/sfdxAction/.github/workflows/createScratchOrg.yml@main
+    with:
+      sc_name: ${{ github.ref }}
+      sc_duration: 2
 
 
 
