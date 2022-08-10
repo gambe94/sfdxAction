@@ -50,7 +50,7 @@ jobs:
         run: |
           sfdx force:auth:jwt:grant --clientid $PROD_CONSUMERKEY \
           --jwtkeyfile certificate/server.key \
-          --username test-wreywwy0nmvn@example.com \        
+          --username $PROD_USERNAME \        
           --setdefaultdevhubusername \
           --setalias=$PROD_ALIAS
           
