@@ -28,6 +28,7 @@ jobs:
     with:
       sc_name: ${{ github.ref }}
       sc_duration: '2'
+    secrets: inherit
 
 
 
