@@ -4,26 +4,26 @@ on:
   workflow_dispatch:
     inputs:
       sc_name:
-        description: 'Scratch Org Name'
-        default: 'CI'
+        description: "Scratch Org Name"
+        default: "CI"
         required: true
         type: string
       sc_duration:
-        description: 'Scratch Org Duration'
-        default: '2'
+        description: "Scratch Org Duration"
+        default: "2"
         required: true
         type: string
 
   workflow_call:
     inputs:
       sc_name:
-        description: 'Scratch Org Name'
-        default: 'CI'
+        description: "Scratch Org Name"
+        default: "CI"
         required: true
         type: string
       sc_duration:
-        description: 'Scratch Org Duration'
-        default: '2'
+        description: "Scratch Org Duration"
+        default: "2"
         required: true
         type: string
     outputs:
@@ -61,29 +61,29 @@ jobs:
         id: create_scratch_org
         run: |
           sfdx force:auth:jwt:grant --clientid $PROD_CONSUMERKEY \
-          --jwtkeyfile certificate/server.key \
-          --username $PROD_USERNAME \
-          --setdefaultdevhubusername \
-          --setalias=$PROD_ALIAS
-          
-          
+            --jwtkeyfile certificate/server.key \
+            --username $PROD_USERNAME \
+            --setdefaultdevhubusername \
+            --setalias=$PROD_ALIAS
+
+
           sfdx force:org:create --setdefaultusername \
           --definitionfile=config/project-scratch-def.json \
           --durationdays=${{ inputs.sc_duration }} \
           --setalias=${{ inputs.sc_name }}
-          
+
           sfdx force:user:password:generate --targetusername ${{ inputs.sc_name }}
-          
+
           sfdx force:org:display --targetusername ${{ inputs.sc_name }} --verbose --json | \
           jq '{username: .result.username, password: .result.password, instanceUrl: .result.instanceUrl}' > cred.json
-          
+
           cat creds.json
-          
-          
+
+
           echo "::set-output name=sc_username::$(cat cred.json | jq '.username')"
           echo "::set-output name=sc_password::$(cat cred.json | jq '.password')"
           echo "::set-output name=sc_instanceUrl::$(cat cred.json | jq '.instanceUrl')"
-          sfdx force:source:push -f   
+          sfdx force:source:push -f
 
       - name: Archive credentials
         uses: actions/upload-artifact@v3
@@ -95,4 +95,3 @@ jobs:
           PROD_CONSUMERKEY: ${{ secrets.PROD_CONSUMERKEY }}
           PROD_USERNAME: ${{ secrets.PROD_USERNAME }}
           PROD_ALIAS: "EburyHub"
-
