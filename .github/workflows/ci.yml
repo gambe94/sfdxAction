@@ -26,13 +26,8 @@ jobs:
     runs-on: ubuntu-latest
     if: needs.init.steps.cache_scratchOrg_cred.outputs.cache-hit != 'true'
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-
       - name: Create scratch Org
-        if: steps.cache_scratchOrg_cred.outputs.cache-hit != 'true'
-        uses: ./.github/workflows/createScratchOrg.yml
+        uses: gambe94/sfdxAction/.github/workflows/createScratchOrg.yml@main
         id: create_scratch_org
         with:
           sc_name: ${{ github.ref }}
