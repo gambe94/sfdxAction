@@ -1,7 +1,18 @@
 name: Create scratch org
 
 on:
-
+  workflow_dispatch:
+    inputs:
+      sc_name:
+        description: 'Scratch Org Name'
+        default: 'CI'
+        required: true
+        type: string
+      sc_duration:
+        description: 'Scratch Org Duration'
+        default: '2'
+        required: true
+        type: string
 
   workflow_call:
     inputs:
