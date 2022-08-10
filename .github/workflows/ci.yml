@@ -23,7 +23,6 @@ jobs:
   create_scratch_org:
     needs:
       - init
-    runs-on: ubuntu-latest
     if: needs.init.steps.cache_scratchOrg_cred.outputs.cache-hit != 'true'
     uses: gambe94/sfdxAction/.github/workflows/createScratchOrg.yml@main
     with:
