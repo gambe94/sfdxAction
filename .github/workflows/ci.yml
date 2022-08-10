@@ -32,7 +32,7 @@ jobs:
 
       - name: Create scratch Org
         if: steps.cache_scratchOrg_cred.outputs.cache-hit != 'true'
-        uses: ./.github/workflows/createScratchOrg
+        uses: ./.github/workflows/createScratchOrg.yml
         id: create_scratch_org
         with:
           sc_name: ${{ github.ref }}
