@@ -24,7 +24,7 @@ jobs:
     needs:
       - init
     runs-on: ubuntu-latest
-    if: jobs.init.steps.cache_scratchOrg_cred.outputs.cache-hit != 'true'
+    if: needs.init.steps.cache_scratchOrg_cred.outputs.cache-hit != 'true'
     steps:
       - name: Create scratch Org
         if: steps.cache_scratchOrg_cred.outputs.cache-hit != 'true'
@@ -38,7 +38,7 @@ jobs:
 
   dev-flow:
     runs-on: ubuntu-latest
-    if: jobs.init.steps.cache_scratchOrg_cred.outputs.cache-hit == 'true'
+    if: needs.init.steps.cache_scratchOrg_cred.outputs.cache-hit == 'true'
     needs:
       - init
       - create_scratch_org
