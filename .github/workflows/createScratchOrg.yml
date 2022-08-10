@@ -68,14 +68,14 @@ jobs:
 
 
           sfdx force:org:create --setdefaultusername \
-          --definitionfile=config/project-scratch-def.json \
-          --durationdays=${{ inputs.sc_duration }} \
-          --setalias=${{ inputs.sc_name }}
+            --definitionfile=config/project-scratch-def.json \
+            --durationdays=${{ inputs.sc_duration }} \
+            --setalias=${{ inputs.sc_name }}
 
           sfdx force:user:password:generate --targetusername ${{ inputs.sc_name }}
 
           sfdx force:org:display --targetusername ${{ inputs.sc_name }} --verbose --json | \
-          jq '{username: .result.username, password: .result.password, instanceUrl: .result.instanceUrl}' > cred.json
+           jq '{username: .result.username, password: .result.password, instanceUrl: .result.instanceUrl}' > cred.json
 
           cat creds.json
 
