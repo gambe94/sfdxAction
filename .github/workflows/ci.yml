@@ -85,9 +85,9 @@ jobs:
       - name: Login scratch Org
         run: |
           cat cred.json 
-          echo ${{ jobs.create_scratch_org.outputs.sc_username }}
-          echo ${{ jobs.create_scratch_org.outputs.sc_password }}
-          echo ${{ jobs.create_scratch_org.outputs.sc_instanceUrl }}
+          echo ${{ needs.create_scratch_org.outputs.sc_username }}
+          echo ${{ needs.create_scratch_org.outputs.sc_password }}
+          echo ${{ needs.create_scratch_org.outputs.sc_instanceUrl }}
         
 
         env:
@@ -110,20 +110,3 @@ jobs:
       - name: Run tests
         run: |
           sfdx plugins
-          sfdx force:apex:test:run --codecoverage --outputdir=testResult \
-            --testlevel=RunLocalTests \
-            --resultformat=human \
-            --detailedcoverage \
-            -u GaborSC
-      - name: Archive testResult
-        uses: actions/upload-artifact@v3
-        with:
-          name: testResult
-          path: |
-            testResult/*junit.xml
-            testResult/test-result-*-codecoverage.json
-      - name: Publish Test Report
-        uses: mikepenz/action-junit-report@v3
-        if: always() # always run even if the previous step fails
-        with:
-          report_paths: "testResult/*junit.xml"
