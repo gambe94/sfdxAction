@@ -67,19 +67,29 @@ jobs:
           --setalias=$PROD_ALIAS
           
           
-          sfdx force:org:create --setdefaultusername --definitionfile=config/project-scratch-def.json \
-          --durationdays=${{ inputs.sc_duration }}  --setalias=${{ inputs.sc_name }}
+          sfdx force:org:create --setdefaultusername \
+          --definitionfile=config/project-scratch-def.json \
+          --durationdays=${{ inputs.sc_duration }} \
+          --setalias=${{ inputs.sc_name }}
           
           sfdx force:user:password:generate --targetusername ${{ inputs.sc_name }}
           
           sfdx force:org:display --targetusername ${{ inputs.sc_name }} --verbose --json | \
           jq '{username: .result.username, password: .result.password, instanceUrl: .result.instanceUrl}' > cred.json
           
-          echo "::set-output name=sc_username::$(cat cred.json | jq '. username')"
-          echo "::set-output name=sc_password::$(cat cred.json | jq '. password')"
-          echo "::set-output name=sc_instanceUrl::$(cat cred.json | jq '. instanceUrl')"
-          sfdx force:source:push -f         
-        
+          cat creds.json
+          
+          
+          echo "::set-output name=sc_username::$(cat cred.json | jq '.username')"
+          echo "::set-output name=sc_password::$(cat cred.json | jq '.password')"
+          echo "::set-output name=sc_instanceUrl::$(cat cred.json | jq '.instanceUrl')"
+          sfdx force:source:push -f   
+
+      - name: Archive credentials
+        uses: actions/upload-artifact@v3
+        with:
+          name: scratch-cred
+          path: cred.json
 
         env:
           PROD_CONSUMERKEY: ${{ secrets.PROD_CONSUMERKEY }}

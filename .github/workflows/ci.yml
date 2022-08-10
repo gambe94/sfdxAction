@@ -3,11 +3,45 @@ on:
   workflow_dispatch:
   push:
     branches:
+      - feature/**
       - main
 #  pull_request:
 jobs:
+
+  init:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache scratchOrg cred
+        id: cache_scratchOrg_cred
+        uses: actions/cache@v3
+        with:
+          path: |
+            cred.json
+          key: ${{ github.ref }}
+
+
+  create_scratch_org:
+    needs:
+      - init
+    runs-on: ubuntu-latest
+    if: jobs.init.steps.cache_scratchOrg_cred.outputs.cache-hit != 'true'
+    steps:
+      - name: Create scratch Org
+        if: steps.cache_scratchOrg_cred.outputs.cache-hit != 'true'
+        uses: ./.github/workflows/createScratchOrg
+        id: create_scratch_org
+        with:
+          sc_name: ${{ github.ref }}
+          sc_duration: 2
+
+
+
   dev-flow:
     runs-on: ubuntu-latest
+    if: jobs.init.steps.cache_scratchOrg_cred.outputs.cache-hit == 'true'
+    needs:
+      - init
+      - create_scratch_org
     container:
       image: docker://gambe94/sfdx:2.0.1
       credentials:
@@ -42,66 +76,19 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Check plugins
-        run: sfdx plugins
-
-
-      - name: Cache scratchOrg cred
-        id: cache_scratchOrg_cred
-        uses: actions/cache@v3
+      - name: Archive credentials
+        uses: actions/download-artifact@v3
         with:
-          path: |
-            cred.json
-          key: ${{ github.ref }}
-      # - uses: actions/download-artifact@v3
-      #   with:
-      #     name: scratch-cred
-      - name: Debug creds
+          name: scratch-cred
+          path: cred.json
+
+      - name: Login scratch Org
         run: |
-          ls -la
-          openssl enc -nosalt -aes-256-cbc -d -in certificate/server.key.enc -out certificate/server.key -base64 -K ${{ secrets.JWT_KEY }} -iv ${{ secrets.JWT_IV }}
-               
-      
-      
-      - name: Dump GitHub context
-        run: echo '${{ toJSON(github) }}'
-      - name: Dump job context
-        run: echo '${{ toJSON(job) }}'
-
-
-
-      - name: Create scratch Org
-        if: steps.cache_scratchOrg_cred.outputs.cache-hit != 'true'
-        run: |
-          sfdx --version
-          sfdx plugins
-               # sfdx force:auth:jwt:grant --clientid $PROD_CONSUMERKEY \
-               #     --jwtkeyfile certificate/server.key \
-               #     --username $PROD_USERNAME \
-               #     --setdefaultdevhubusername \
-               #     --setalias=$PROD_ALIAS
-
-               # sfdx force:org:create --setdefaultusername --definitionfile=config/project-scratch-def.json \
-               #   --durationdays=2  --setalias=GaborSC
-
-               # sfdx force:user:password:generate --targetusername GaborSC
-
-               # sfdx force:org:display --targetusername GaborSC --verbose --json | \
-               #   jq '{username: .result.username, password: .result.password, instanceUrl: .result.instanceUrl}' > cred.json
-
-               # sfdx force:source:push -f
-          
-          sfdx force:auth:jwt:grant --clientid $PROD_CONSUMERKEY \
-          --jwtkeyfile certificate/server.key \
-          --username test-wreywwy0nmvn@example.com \
-          --instanceurl=https://power-page-8078-dev-ed.my.salesforce.com \
-          --setdefaultusername \
-          --setalias=GaborSC
-
-           sfdx force:org:display --targetusername GaborSC --verbose --json | \
-                 jq '{username: .result.username, password: .result.password, instanceUrl: .result.instanceUrl}' > cred.json
-          
-          sfdx force:source:push -f -u GaborSC
+          cat cred.json 
+          echo ${{ jobs.create_scratch_org.outputs.sc_username }}
+          echo ${{ jobs.create_scratch_org.outputs.sc_password }}
+          echo ${{ jobs.create_scratch_org.outputs.sc_instanceUrl }}
+        
 
         env:
           PROD_CONSUMERKEY: ${{ secrets.PROD_CONSUMERKEY }}
@@ -115,33 +102,10 @@ jobs:
           name: scratch-cred
           path: cred.json
 
-      - name: Login scratch Org
-        if: steps.cache_scratchOrg_cred.outputs.cache-hit == 'true'
-        run: |
-          sfdx plugins
-          
-          
-          sfdx force:auth:jwt:grant --clientid $PROD_CONSUMERKEY \
-          --jwtkeyfile certificate/server.key \
-          --username test-wreywwy0nmvn@example.com \
-          --instanceurl=https://power-page-8078-dev-ed.my.salesforce.com \
-          --setdefaultusername \
-          --setalias=GaborSC
-          
-          sfdx force:source:push -f -u GaborSC
-        env:
-          PROD_CONSUMERKEY: ${{ secrets.PROD_CONSUMERKEY }}
-          PROD_USERNAME: ${{ secrets.PROD_USERNAME }}
-          PROD_ALIAS: "EburyHub"
-
       - name: Generate dif
         run: |
           
-          sfdx force:apex:test:run --codecoverage --outputdir=testResult \
-            --testlevel=RunLocalTests \
-            --resultformat=human \
-            --detailedcoverage \
-            -u GaborSC
+          echo "diff"
 
       - name: Run tests
         run: |
@@ -162,5 +126,4 @@ jobs:
         uses: mikepenz/action-junit-report@v3
         if: always() # always run even if the previous step fails
         with:
-          report_paths: 'testResult/*junit.xml'
-
+          report_paths: "testResult/*junit.xml"
