@@ -57,16 +57,19 @@ jobs:
       - name: Encode private key
         run: openssl enc -nosalt -aes-256-cbc -d -in certificate/server.key.enc -out certificate/server.key -base64 -K ${{ secrets.JWT_KEY }} -iv ${{ secrets.JWT_IV }}
 
+      - name: Loginto produciton
+        run: |
+          sfdx force:auth:jwt:grant --clientid=$PROD_CONSUMERKEY \
+          --jwtkeyfile=certificate/server.key \
+          --username=$PROD_USERNAME \
+          --instanceurl=https://login.salesforce.com/ \
+          --setdefaultdevhubusername \
+          --setalias=$PROD_ALIAS
+
+
       - name: Create scratch Org
         id: create_scratch_org
         run: |
-          sfdx force:auth:jwt:grant --clientid=$PROD_CONSUMERKEY \
-            --jwtkeyfile=certificate/server.key \
-            --username=$PROD_USERNAME \
-            --setdefaultdevhubusername \
-            --setalias=$PROD_ALIAS
-
-
           sfdx force:org:create --setdefaultusername \
             --definitionfile=config/project-scratch-def.json \
             --durationdays=${{ inputs.sc_duration }} \
