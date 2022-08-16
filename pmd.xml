@@ -6,13 +6,13 @@
         <violation beginline="5" endline="5" begincolumn="14" endcolumn="23" rule="ApexSharingViolations"
                    ruleset="Security"
                    externalInfoUrl="https://pmd.github.io/pmd-6.47.0/pmd_rules_apex_security.html#apexsharingviolations"
-                   priority="3">
+                   priority="2">
             Apex classes should declare a sharing model if DML or SOQL/SOSL is used
         </violation>
         <violation beginline="17" endline="17" begincolumn="4" endcolumn="24" rule="OperationWithLimitsInLoop"
                    ruleset="Performance"
                    externalInfoUrl="https://pmd.github.io/pmd-6.47.0/pmd_rules_apex_performance.html#operationwithlimitsinloop"
-                   priority="3">
+                   priority="1">
             Avoid operations in loops that may hit governor limits
         </violation>
     </file>
