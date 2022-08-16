@@ -59,42 +59,41 @@ jobs:
 
       - name: Loginto produciton
         run: |
-          #          sfdx force:auth:jwt:grant --clientid=$PROD_CONSUMERKEY \
-          #          --jwtkeyfile=certificate/server.key \
-          #          --username=$PROD_USERNAME \
-          #          --instanceurl=https://login.salesforce.com/ \
-          #          --setdefaultdevhubusername \
-          #          --setalias=$PROD_ALIAS
-               echo "Login to prod"
+          # sfdx force:auth:jwt:grant --clientid=$PROD_CONSUMERKEY \
+          # --jwtkeyfile=certificate/server.key \
+          # --username=$PROD_USERNAME \
+          # --instanceurl=https://login.salesforce.com/ \
+          # --setdefaultdevhubusername \
+          # --setalias=$PROD_ALIAS
+          # echo "Login to prod"
 
       - name: Create scratch Org
         id: create_scratch_org
         run: |
-          #          sfdx force:org:create --setdefaultusername \
-          #            --definitionfile=config/project-scratch-def.json \
-          #            --durationdays=${{ inputs.sc_duration }} \
-          #            --setalias=${{ inputs.sc_name }}
-          #
-          #          sfdx force:user:password:generate --targetusername ${{ inputs.sc_name }}
-          #
-          #          sfdx force:org:display --targetusername ${{ inputs.sc_name }} --verbose --json | \
-          #           jq '{username: .result.username, password: .result.password, instanceUrl: .result.instanceUrl}' > cred.json
-          #
-          #          cat creds.json
-               
-               JSON_TEXT={ \
-               "username": "test-lvmqwye7txkd@example.com", \
-               "password": "yNcg^x3nwppge", \
-               "instanceUrl": "https://java-innovation-3701.my.salesforce.com" \
-        }
+          # sfdx force:org:create --setdefaultusername \
+          #   --definitionfile=config/project-scratch-def.json \
+          #   --durationdays=${{ inputs.sc_duration }} \
+          #   --setalias=${{ inputs.sc_name }}
 
-               echo "${JSON_TEXT}" > cred.json
-               
-               
-               echo "::set-output name=sc_username::$(cat cred.json | jq '.username')"
-               echo "::set-output name=sc_password::$(cat cred.json | jq '.password')"
-               echo "::set-output name=sc_instanceUrl::$(cat cred.json | jq '.instanceUrl')"
+          # sfdx force:user:password:generate --targetusername ${{ inputs.sc_name }}
 
+          # sfdx force:org:display --targetusername ${{ inputs.sc_name }} --verbose --json | \
+          #  jq '{username: .result.username, password: .result.password, instanceUrl: .result.instanceUrl}' > cred.json
+
+          # cat creds.json
+
+          JSON_TEXT={ \
+          "username": "test-lvmqwye7txkd@example.com", \
+          "password": "yNcg^x3nwppge", \
+          "instanceUrl": "https://java-innovation-3701.my.salesforce.com" \
+          }
+
+          echo "${JSON_TEXT}" > cred.json
+
+
+          echo "::set-output name=sc_username::$(cat cred.json | jq '.username')"
+          echo "::set-output name=sc_password::$(cat cred.json | jq '.password')"
+          echo "::set-output name=sc_instanceUrl::$(cat cred.json | jq '.instanceUrl')"
 
       - name: Archive credentials
         uses: actions/upload-artifact@v3
