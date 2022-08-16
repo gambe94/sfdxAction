@@ -29,7 +29,7 @@ jobs:
           distribution: 'temurin'
       - name: Install Scanner
         run: |
-          echo 'y' | sfdx plugins:uninstall @salesforce/sfdx-scanner
+          echo 'y' | sfdx plugins:install @salesforce/sfdx-scanner@latest-pilot
           sfdx plugins
 
       - name: Run Scanner
