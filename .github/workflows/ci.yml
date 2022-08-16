@@ -11,8 +11,6 @@ jobs:
   init:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
       - name: Cache scratchOrg cred
         id: cache_scratchOrg_cred
         uses: actions/cache@v3
@@ -21,12 +19,7 @@ jobs:
             cred.json
           key: ${{ github.ref }}
 
-      - name: Private action
-        id: create_scratch_action
-        uses: .github/actions/create_sratch_org
-        with:
-          sc_name: 'Hello from Main'
-          sc_duration: '17'
+
 
 
   create_scratch_org:
