@@ -40,14 +40,14 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: scratch-cred
-          path: cred.json
+          path: creds
 
       - name: Validate artifact
         if: always()
         run: |
           pwd
-          ls -la
-          cat cred.json
+          ls -laR
+          cat creds/cred.json
 
       - name: Validate Job Output
         if: always()
