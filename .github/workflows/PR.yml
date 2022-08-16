@@ -10,15 +10,32 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: docker://gambe94/sfdx:2.0.1
+      credentials:
+        username: "gambe94"
+        password: ${{ secrets.DOCKER_TOKEN }}
     steps:
       - name: Welcome
         run: echo Build
       - name: Dump GitHub context
         id: github_context_step
         run: echo '${{ toJSON(github) }}'
-      - name: Check APEX
-        uses: legetz/setup-pmd@v6.48
-        run: pmd -language apex --dir . --rulesets ./pmd-rules-example.xml -f textcolor
+      - uses: actions/checkout@v3
+      - name: Install Scanner
+        run: |
+          echo 'y' | sfdx plugins:install @salesforce/sfdx-scanner@2.13.7
+          sfdx plugins
+
+      - name: Run Scanner
+        run: |
+          sfdx scanner:run --format sarif --target "force-app" --category "Design,Best Practices" --outfile pmd-report.sarif
+
+
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: pmd-report.sarif
 
   test:
     runs-on: ubuntu-latest
