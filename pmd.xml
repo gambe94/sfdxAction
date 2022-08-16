@@ -1,0 +1,15 @@
+<results total="1" totalViolations="2">
+
+    <result file="force-app/main/default/classes/GaborClassTest.cls" engine="pmd">
+        <violation severity="3" line="11" column="10" endLine="11" endColumn="21"
+                   rule="ApexAssertionsShouldIncludeMessage" category="Best Practices"
+                   url="https://pmd.github.io/pmd-6.47.0/pmd_rules_apex_bestpractices.html#apexassertionsshouldincludemessage">
+            &#39;System.assertEquals&#39; should have 3 parameters.
+        </violation>
+        <violation severity="3" line="17" column="10" endLine="17" endColumn="21"
+                   rule="ApexAssertionsShouldIncludeMessage" category="Best Practices"
+                   url="https://pmd.github.io/pmd-6.47.0/pmd_rules_apex_bestpractices.html#apexassertionsshouldincludemessage">
+            &#39;System.assertEquals&#39; should have 3 parameters.
+        </violation>
+    </result>
+</results>

@@ -25,6 +25,9 @@ jobs:
       - name: Check APEX
         uses: legetz/setup-pmd@v6.48
                 - run: pmd -language apex --dir . --rulesets ./pmd-rules-example.xml -f text
+      - uses: jwgmeligmeyling/pmd-github-action@master
+        with:
+          path: 'pmd.xml'
 
 
   test:
