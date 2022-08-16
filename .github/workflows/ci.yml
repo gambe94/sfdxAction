@@ -30,7 +30,27 @@ jobs:
       sc_duration: '2'
     secrets: inherit
 
+  checkOutput:
+    runs-on: ubuntu-latest
+    if: needs.init.steps.cache_scratchOrg_cred.outputs.cache-hit == 'true'
+    needs:
+      - init
+      - create_scratch_org
+    steps:
+      - name: Archive credentials
+        uses: actions/download-artifact@v3
+        with:
+          name: scratch-cred
+          path: cred.json
 
+      - name: Validate artifact
+        run: cat cred.json
+
+      - name: Validate Job Output
+        run: |
+          echo ${{ needs.create_scratch_org.outputs.sc_username }}
+          echo ${{ needs.create_scratch_org.outputs.sc_password }}
+          echo ${{ needs.create_scratch_org.outputs.sc_instanceUrl }}
 
   dev-flow:
     runs-on: ubuntu-latest
