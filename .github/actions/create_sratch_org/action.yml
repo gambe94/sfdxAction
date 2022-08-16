@@ -20,7 +20,7 @@ outputs:
 
 runs:
   using: 'docker'
-  image: 'docker://salesforce/salesforcedx:7.164.1-full'
+  image: 'Dockerfile'
   args:
     - ${{ inputs.sc_name}}
     - ${{ inputs.sc_duration}}
