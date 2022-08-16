@@ -26,4 +26,11 @@
             <property name="minimum" value="7.0"/>
         </properties>
     </rule>
+    <rule ref="category/apex/performance.xml/OperationWithLimitsInLoop">
+        <priority>1</priority>
+    </rule>
+
+    <rule ref="category/apex/security.xml/ApexSOQLInjection">
+        <priority>1</priority>
+    </rule>
 </ruleset>

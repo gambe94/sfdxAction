@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-     version="6.47.0" timestamp="2022-08-17T00:02:43.971">
+     version="6.47.0" timestamp="2022-08-17T00:17:34.304">
     <file name="/home/demeter/IdeaProjects/sfdxAction/force-app/main/default/classes/GaborClass.cls">
         <violation beginline="5" endline="5" begincolumn="14" endcolumn="23" rule="ApexSharingViolations"
                    ruleset="Security"
                    externalInfoUrl="https://pmd.github.io/pmd-6.47.0/pmd_rules_apex_security.html#apexsharingviolations"
-                   priority="2">
+                   priority="3">
             Apex classes should declare a sharing model if DML or SOQL/SOSL is used
         </violation>
         <violation beginline="17" endline="17" begincolumn="4" endcolumn="24" rule="OperationWithLimitsInLoop"

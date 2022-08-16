@@ -1,0 +1,110 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "PMD",
+          "version": "6.47.0",
+          "informationUri": "https://pmd.github.io/pmd/",
+          "rules": [
+            {
+              "id": "ApexSharingViolations",
+              "shortDescription": {
+                "text": "Apex classes should declare a sharing model if DML or SOQL/SOSL is used"
+              },
+              "fullDescription": {
+                "text": "\nDetect classes declared without explicit sharing mode if DML methods are used. This\nforces the developer to take access restrictions into account before modifying objects.\n        "
+              },
+              "helpUri": "https://pmd.github.io/pmd-6.47.0/pmd_rules_apex_security.html#apexsharingviolations",
+              "help": {
+                "text": "\nDetect classes declared without explicit sharing mode if DML methods are used. This\nforces the developer to take access restrictions into account before modifying objects.\n        "
+              },
+              "properties": {
+                "ruleset": "Security",
+                "priority": 3,
+                "tags": [
+                  "Security"
+                ]
+              }
+            },
+            {
+              "id": "OperationWithLimitsInLoop",
+              "shortDescription": {
+                "text": "Avoid operations in loops that may hit governor limits"
+              },
+              "fullDescription": {
+                "text": "\n            Database class methods, DML operations, SOQL queries, SOSL queries, Approval class methods, Email sending, async scheduling or queueing within loops can cause governor limit exceptions. Instead, try to batch up the data into a list and invoke the operation once on that list of data outside the loop.\n        "
+              },
+              "helpUri": "https://pmd.github.io/pmd-6.47.0/pmd_rules_apex_performance.html#operationwithlimitsinloop",
+              "help": {
+                "text": "\n            Database class methods, DML operations, SOQL queries, SOSL queries, Approval class methods, Email sending, async scheduling or queueing within loops can cause governor limit exceptions. Instead, try to batch up the data into a list and invoke the operation once on that list of data outside the loop.\n        "
+              },
+              "properties": {
+                "ruleset": "Performance",
+                "priority": 1,
+                "tags": [
+                  "Performance"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "ApexSharingViolations",
+          "ruleIndex": 0,
+          "message": {
+            "text": "Apex classes should declare a sharing model if DML or SOQL/SOSL is used"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/home/demeter/IdeaProjects/sfdxAction/force-app/main/default/classes/GaborClass.cls"
+                },
+                "region": {
+                  "startLine": 5,
+                  "startColumn": 14,
+                  "endLine": 5,
+                  "endColumn": 23
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "OperationWithLimitsInLoop",
+          "ruleIndex": 1,
+          "message": {
+            "text": "Avoid operations in loops that may hit governor limits"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/home/demeter/IdeaProjects/sfdxAction/force-app/main/default/classes/GaborClass.cls"
+                },
+                "region": {
+                  "startLine": 17,
+                  "startColumn": 4,
+                  "endLine": 17,
+                  "endColumn": 24
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "invocations": [
+        {
+          "executionSuccessful": true,
+          "toolConfigurationNotifications": [],
+          "toolExecutionNotifications": []
+        }
+      ]
+    }
+  ]
+}
