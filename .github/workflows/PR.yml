@@ -27,20 +27,11 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
-      - name: Install Scanner
-        run: |
-          echo 'y' | sfdx plugins:install @salesforce/sfdx-scanner@latest-pilot
-          sfdx plugins
-
-      - name: Run Scanner
-        run: |
-          sfdx scanner:run --format sarif --target "force-app" --category "Design,Best Practices" --outfile pmd-report.sarif
 
 
-      - name: Upload SARIF file
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: pmd-report.sarif
+      - uses: sfdx-actions/setup-pmd@v1
+      - name: run-pmd
+        run: pmd -d ./force-app/main/default/classes -R category/apex/design.xml -f text
 
   test:
     runs-on: ubuntu-latest
