@@ -1,0 +1,27 @@
+# action.yml
+name: 'Hello World'
+description: 'Greet someone and record the time'
+inputs:
+  sc_name:
+    description: "Scratch Org Name"
+    default: "CI_Private"
+    required: true
+  sc_duration:
+    description: "Scratch Org Duration"
+    default: "2"
+    required: true
+outputs:
+  sc_username:
+    description: "The first job output"
+  sc_password:
+    description: "The second job output"
+  sc_instanceUrl:
+    description: "The second job output"
+
+runs:
+  using: 'docker'
+  image: 'docker://salesforce/salesforcedx:7.164.1-full'
+  args:
+    - ${{ inputs.sc_name}}
+    - ${{ inputs.sc_duration}}
+  entrypoint: 'main.sh'
