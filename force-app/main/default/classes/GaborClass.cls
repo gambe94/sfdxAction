@@ -10,6 +10,9 @@ public with sharing class GaborClass {
 		return 'Bye ' + user;
 	}
 	public static String bye2User(String user) {
-		return 'Bye2 ' + user;
+		return 'Bye ' + user;
+	}
+	public static String bye3User(String user) {
+		return 'Bye3 ' + user;
 	}
 }
