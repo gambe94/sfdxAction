@@ -5,8 +5,7 @@ on:
       - opened
       - synchronize
       - closed
-    branches:
-      - 'feature/**'
+
 
 jobs:
   build:
