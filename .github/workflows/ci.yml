@@ -43,9 +43,14 @@ jobs:
           path: cred.json
 
       - name: Validate artifact
-        run: cat cred.json
+        if: always()
+        run: |
+          pwd
+          ls -la
+          cat cred.json
 
       - name: Validate Job Output
+        if: always()
         run: |
           echo ${{ needs.create_scratch_org.outputs.sc_username }}
           echo ${{ needs.create_scratch_org.outputs.sc_password }}
