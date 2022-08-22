@@ -87,9 +87,9 @@ jobs:
             --durationdays 2 \
             --setalias GaborSC
           
-          sfdx force:user:password:generate --targetusername ${{ inputs.sc_name }}
+          sfdx force:user:password:generate 
           
-          sfdx force:org:display --targetusername ${{ inputs.sc_name }} --verbose --json | \
+          sfdx force:org:display  --verbose --json | \
            jq '{username: .result.username, password: .result.password, instanceUrl: .result.instanceUrl}' > cred.json
           
           cat creds.json          
