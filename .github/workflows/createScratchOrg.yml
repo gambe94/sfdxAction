@@ -38,7 +38,7 @@ on:
         description: "Created scratch org instanceURL"
         value: ${{ jobs.dev-flow.outputs.sc_instanceUrl }}
 jobs:
-  dev-flow:
+  create-sratch-org:
     runs-on: ubuntu-latest
     outputs:
       sc_username: ${{ steps.create_scratch_org.outputs.sc_username }}
@@ -55,6 +55,12 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Dump GitHub context
+        run: echo '${{ toJSON(github) }}'
+
+      - name: Dump inputs context
+        run: echo '${{ toJSON(inputs) }}'
 
       - name: Encode private key
         run: openssl enc -nosalt -aes-256-cbc -d -in certificate/server.key.enc -out certificate/server.key -base64 -K ${{ secrets.JWT_KEY }} -iv ${{ secrets.JWT_IV }}
@@ -78,8 +84,8 @@ jobs:
         run: |
           sfdx force:org:create --setdefaultusername \
             --definitionfile config/project-scratch-def.json \
-            --durationdays ${{ inputs.sc_duration }} \
-            --setalias ${{ inputs.sc_name }}
+            --durationdays 2 \
+            --setalias GaborSC
           
           sfdx force:user:password:generate --targetusername ${{ inputs.sc_name }}
           
