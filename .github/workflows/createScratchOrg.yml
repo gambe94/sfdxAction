@@ -96,9 +96,10 @@ jobs:
           
           echo "::set-output name=sc_username::$(cat cred.json | jq '.username')"
           echo "::set-output name=sc_password::$(cat cred.json | jq '.password')"
-          echo "::set-output name=sc_instanceUrl::$(cat cred.json | jq '.instanceUrl')"        
-
-
+          echo "::set-output name=sc_instanceUrl::$(cat cred.json | jq '.instanceUrl')"      
+                
+      
+      
       - name: Archive credentials
         uses: actions/upload-artifact@v3
         with:
