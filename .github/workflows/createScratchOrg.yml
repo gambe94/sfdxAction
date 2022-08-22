@@ -28,13 +28,13 @@ on:
         type: string
     outputs:
       sc_username:
-        description: "The first job output"
+        description: "Created scratch org username"
         value: ${{ jobs.dev-flow.outputs.sc_username }}
       sc_password:
-        description: "The second job output"
+        description: "Created scratch org password"
         value: ${{ jobs.dev-flow.outputs.sc_password }}
       sc_instanceUrl:
-        description: "The second job output"
+        description: "Created scratch org instanceURL"
         value: ${{ jobs.dev-flow.outputs.sc_instanceUrl }}
 jobs:
   dev-flow:
@@ -51,28 +51,53 @@ jobs:
         password: ${{ secrets.DOCKER_TOKEN }}
 
     steps:
+      - env:
+          PROD_CONSUMERKEY: ${{ secrets.PROD_CONSUMERKEY }}
+          PROD_USERNAME: ${{ secrets.PROD_USERNAME }}
+          PROD_ALIAS: "GaborDev"
+
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: Encode private key
         run: openssl enc -nosalt -aes-256-cbc -d -in certificate/server.key.enc -out certificate/server.key -base64 -K ${{ secrets.JWT_KEY }} -iv ${{ secrets.JWT_IV }}
 
-      - name: Loginto produciton
+      - name: Login production
         run: |
-          # sfdx force:auth:jwt:grant --clientid=$PROD_CONSUMERKEY \
-          # --jwtkeyfile=certificate/server.key \
-          # --username=$PROD_USERNAME \
-          # --instanceurl=https://login.salesforce.com/ \
-          # --setdefaultdevhubusername \
-          # --setalias=$PROD_ALIAS
-          # echo "Login to prod"
+          sfdx force:auth:jwt:grant --clientid $PROD_CONSUMERKEY \
+          --jwtkeyfile certificate/server.key \
+          --username $PROD_USERNAME \
+          --instanceurl https://login.salesforce.com/ \
+          --setdefaultdevhubusername \
+          --setalias $PROD_ALIAS
+          echo "Login to prod"
 
-      - name: create-json
-        id: create-json
-        uses: jsdaniell/create-json@1.1.2
-        with:
-          name: "cred.json"
-          json: '{"username": "test-lvmqwye7txkd@example.com", "password": "aaaa", "instanceUrl": "https://java-innovation-3701.my.salesforce.com"}'
+      - name: Create scratch Org
+        id: create_scratch_org
+        run: |
+          sfdx force:org:create --setdefaultusername \
+            --definitionfile config/project-scratch-def.json \
+            --durationdays ${{ inputs.sc_duration }} \
+            --setalias ${{ inputs.sc_name }}
+          
+          sfdx force:user:password:generate --targetusername ${{ inputs.sc_name }}
+          
+          sfdx force:org:display --targetusername ${{ inputs.sc_name }} --verbose --json | \
+           jq '{username: .result.username, password: .result.password, instanceUrl: .result.instanceUrl}' > cred.json
+          
+          cat creds.json          
+          
+          echo "::set-output name=sc_username::$(cat cred.json | jq '.username')"
+          echo "::set-output name=sc_password::$(cat cred.json | jq '.password')"
+          echo "::set-output name=sc_instanceUrl::$(cat cred.json | jq '.instanceUrl')"        
+      
+
+      #      - name: create-json
+      #        id: create-json
+      #        uses: jsdaniell/create-json@1.1.2
+      #        with:
+      #          name: "cred.json"
+      #          json: '{"username": "test-lvmqwye7txkd@example.com", "password": "aaaa", "instanceUrl": "https://java-innovation-3701.my.salesforce.com"}'
 
       - name: Archive credentials
         uses: actions/upload-artifact@v3
@@ -80,29 +105,6 @@ jobs:
           name: scratch-cred
           path: cred.json
 
-      - name: Create scratch Org
-        id: create_scratch_org
-        run: |
-          # sfdx force:org:create --setdefaultusername \
-          #   --definitionfile=config/project-scratch-def.json \
-          #   --durationdays=${{ inputs.sc_duration }} \
-          #   --setalias=${{ inputs.sc_name }}
 
-          # sfdx force:user:password:generate --targetusername ${{ inputs.sc_name }}
 
-          # sfdx force:org:display --targetusername ${{ inputs.sc_name }} --verbose --json | \
-          #  jq '{username: .result.username, password: .result.password, instanceUrl: .result.instanceUrl}' > cred.json
 
-          # cat creds.json
-          
-          
-          echo "::set-output name=sc_username::$(cat cred.json | jq '.username')"
-          echo "::set-output name=sc_password::$(cat cred.json | jq '.password')"
-          echo "::set-output name=sc_instanceUrl::$(cat cred.json | jq '.instanceUrl')"
-        
-        
-
-        env:
-          PROD_CONSUMERKEY: ${{ secrets.PROD_CONSUMERKEY }}
-          PROD_USERNAME: ${{ secrets.PROD_USERNAME }}
-          PROD_ALIAS: "EburyHub"
