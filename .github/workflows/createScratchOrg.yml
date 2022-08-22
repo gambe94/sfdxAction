@@ -92,7 +92,7 @@ jobs:
           sfdx force:org:display  --verbose --json | \
            jq '{username: .result.username, password: .result.password, instanceUrl: .result.instanceUrl}' > cred.json
           
-          cat creds.json          
+          cat cred.json          
           
           echo "::set-output name=sc_username::$(cat cred.json | jq '.username')"
           echo "::set-output name=sc_password::$(cat cred.json | jq '.password')"
