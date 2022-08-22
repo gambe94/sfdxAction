@@ -1,6 +1,7 @@
 name: Create scratch org
 
 on:
+  push:
   workflow_dispatch:
     inputs:
       sc_name:
@@ -51,10 +52,6 @@ jobs:
         password: ${{ secrets.DOCKER_TOKEN }}
 
     steps:
-      - env:
-          PROD_CONSUMERKEY: ${{ secrets.PROD_CONSUMERKEY }}
-          PROD_USERNAME: ${{ secrets.PROD_USERNAME }}
-          PROD_ALIAS: "GaborDev"
 
       - name: Checkout
         uses: actions/checkout@v3
@@ -89,8 +86,12 @@ jobs:
           
           echo "::set-output name=sc_username::$(cat cred.json | jq '.username')"
           echo "::set-output name=sc_password::$(cat cred.json | jq '.password')"
-          echo "::set-output name=sc_instanceUrl::$(cat cred.json | jq '.instanceUrl')"        
-      
+          echo "::set-output name=sc_instanceUrl::$(cat cred.json | jq '.instanceUrl')"
+      - env:
+          PROD_CONSUMERKEY: ${{ secrets.PROD_CONSUMERKEY }}
+          PROD_USERNAME: ${{ secrets.PROD_USERNAME }}
+          PROD_ALIAS: "GaborDev"
+
 
       - name: Archive credentials
         uses: actions/upload-artifact@v3
