@@ -80,6 +80,7 @@ jobs:
           echo "Login to prod"
 
       - name: Create scratch Org
+        if: { { false } }
         id: create_scratch_org
         run: |
           sfdx force:org:create --setdefaultusername \
@@ -97,9 +98,24 @@ jobs:
           echo "::set-output name=sc_username::$(cat cred.json | jq '.username')"
           echo "::set-output name=sc_password::$(cat cred.json | jq '.password')"
           echo "::set-output name=sc_instanceUrl::$(cat cred.json | jq '.instanceUrl')"      
-                
-      
-      
+
+      - name: create-json
+        id: create-json
+        uses: jsdaniell/create-json@1.1.2
+        with:
+          name: "cred.json"
+          json: '{"username": "test-lvmqwye7txkd@example.com", "password": "aaaa", "instanceUrl": "https://java-innovation-3701.my.salesforce.com"}'
+
+
+      - name: Check output
+        run: |
+          cat cred.json          
+          
+          echo "::set-output name=sc_username::$(cat cred.json | jq '.username')"
+          echo "::set-output name=sc_password::$(cat cred.json | jq '.password')"
+          echo "::set-output name=sc_instanceUrl::$(cat cred.json | jq '.instanceUrl')"      
+
+
       - name: Archive credentials
         uses: actions/upload-artifact@v3
         with:
