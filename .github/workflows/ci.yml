@@ -26,8 +26,7 @@ jobs:
           key: ${{ github.workspace }}-${{ github.ref }}
       - name: 'Login to scratch org'
         if: needs.init.steps.cache_scratchOrg_cred.outputs.cache-hit == 'true'
-        run: |
-          echo "WE have cache"
+        run: echo "WE have cache"
 
 
   create_scratch_org:
