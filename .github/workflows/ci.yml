@@ -1,11 +1,9 @@
 name: CI job
 on:
   workflow_dispatch:
-  push:
+  pull_request:
     branches:
       - feature/**
-      - main
-#  pull_request:
 
 env:
   PROD_CONSUMERKEY: ${{ secrets.PROD_CONSUMERKEY }}
