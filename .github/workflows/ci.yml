@@ -23,7 +23,7 @@ jobs:
     needs:
       - create_scratch_org
     container:
-      image: docker://gambe94/sfdx:2.0.1
+      image: docker://gambe94/sfdx:2.0.2
       credentials:
         username: "gambe94"
         password: ${{ secrets.DOCKER_TOKEN }}
@@ -63,12 +63,13 @@ jobs:
         continue-on-error: true
 
 
-      - name: Generate dif
+      - name: Generate diff
         run: |
           git branch -r
           git merge-base origin/main  HEAD
           # sfdx sfpowerkit:project:diff --revisionfrom "${MERGE_BASE}" --revisionto HEAD --output ${GENERATED_DIFF_FOLDER} --generatedestructive
           ls -laR ${GENERATED_DIFF_FOLDER}
+          java --version
         env:
           GENERATED_DIFF_FOLDER: 'generatedDiff'
         continue-on-error: true
