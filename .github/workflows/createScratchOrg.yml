@@ -1,5 +1,4 @@
 name: Create scratch org
-
 on:
   workflow_dispatch:
     inputs:
@@ -37,7 +36,7 @@ on:
         description: "Created scratch org instanceURL"
         value: ${{ jobs.dev-flow.outputs.sc_instanceUrl }}
 jobs:
-  dev-flow:
+  create-sratch-org:
     runs-on: ubuntu-latest
     outputs:
       sc_username: ${{ steps.create_scratch_org.outputs.sc_username }}
@@ -51,18 +50,23 @@ jobs:
         password: ${{ secrets.DOCKER_TOKEN }}
 
     steps:
-      - env:
-          PROD_CONSUMERKEY: ${{ secrets.PROD_CONSUMERKEY }}
-          PROD_USERNAME: ${{ secrets.PROD_USERNAME }}
-          PROD_ALIAS: "GaborDev"
-
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Dump GitHub context
+        run: echo '${{ toJSON(github) }}'
+
+      - name: Dump inputs context
+        run: echo '${{ toJSON(inputs) }}'
 
       - name: Encode private key
         run: openssl enc -nosalt -aes-256-cbc -d -in certificate/server.key.enc -out certificate/server.key -base64 -K ${{ secrets.JWT_KEY }} -iv ${{ secrets.JWT_IV }}
 
       - name: Login production
+        env:
+          PROD_CONSUMERKEY: ${{ secrets.PROD_CONSUMERKEY }}
+          PROD_USERNAME: ${{ secrets.PROD_USERNAME }}
+          PROD_ALIAS: "GaborDev"
         run: |
           sfdx force:auth:jwt:grant --clientid $PROD_CONSUMERKEY \
           --jwtkeyfile certificate/server.key \
@@ -73,31 +77,24 @@ jobs:
           echo "Login to prod"
 
       - name: Create scratch Org
+        if: false
         id: create_scratch_org
         run: |
           sfdx force:org:create --setdefaultusername \
             --definitionfile config/project-scratch-def.json \
-            --durationdays ${{ inputs.sc_duration }} \
-            --setalias ${{ inputs.sc_name }}
+            --durationdays 2 \
+            --setalias GaborSC
           
-          sfdx force:user:password:generate --targetusername ${{ inputs.sc_name }}
+          sfdx force:user:password:generate 
           
-          sfdx force:org:display --targetusername ${{ inputs.sc_name }} --verbose --json | \
+          sfdx force:org:display  --verbose --json | \
            jq '{username: .result.username, password: .result.password, instanceUrl: .result.instanceUrl}' > cred.json
           
-          cat creds.json          
+          cat cred.json          
           
           echo "::set-output name=sc_username::$(cat cred.json | jq '.username')"
           echo "::set-output name=sc_password::$(cat cred.json | jq '.password')"
-          echo "::set-output name=sc_instanceUrl::$(cat cred.json | jq '.instanceUrl')"        
-      
-
-      #      - name: create-json
-      #        id: create-json
-      #        uses: jsdaniell/create-json@1.1.2
-      #        with:
-      #          name: "cred.json"
-      #          json: '{"username": "test-lvmqwye7txkd@example.com", "password": "aaaa", "instanceUrl": "https://java-innovation-3701.my.salesforce.com"}'
+          echo "::set-output name=sc_instanceUrl::$(cat cred.json | jq '.instanceUrl')"      
 
       - name: Archive credentials
         uses: actions/upload-artifact@v3

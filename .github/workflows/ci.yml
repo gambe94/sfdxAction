@@ -33,7 +33,7 @@ jobs:
     needs:
       - init
     if: needs.init.steps.cache_scratchOrg_cred.outputs.cache-hit != 'true'
-    uses: gambe94/sfdxAction/.github/workflows/createScratchOrg.yml@main
+    uses: gambe94/sfdxAction/.github/workflows/createScratchOrg.yml@feature/A
     with:
       sc_name: ${SC_ORG_ALIAS}
       sc_duration: '2'
