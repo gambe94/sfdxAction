@@ -37,6 +37,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: artifact.yml
+          workflow_conclusion: ''
           name: my-artifact
 
 
