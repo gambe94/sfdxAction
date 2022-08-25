@@ -1,7 +1,5 @@
 name: Create scratch org
-
 on:
-  push:
   workflow_dispatch:
     inputs:
       sc_name:
@@ -27,6 +25,10 @@ on:
         default: "2"
         required: true
         type: string
+      cred_key:
+        required: true
+        type: string
+
     outputs:
       sc_username:
         description: "Created scratch org username"
@@ -38,7 +40,29 @@ on:
         description: "Created scratch org instanceURL"
         value: ${{ jobs.dev-flow.outputs.sc_instanceUrl }}
 jobs:
+  init:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache scratchOrg cred
+        id: cache_scratchOrg_cred
+        uses: actions/cache@v3
+        with:
+          path: |
+            cred.json
+          key: ${{ inputs.cred_key }}
+
+      - name: Archive credentials
+        uses: actions/upload-artifact@v3
+        if: steps.cache_scratchOrg_cred.outputs.cache-hit == 'true'
+        with:
+          name: scratch-cred
+          path: cred.json
+
+
   create-sratch-org:
+    needs:
+      - init
+    if: needs.init.steps.cache_scratchOrg_cred.outputs.cache-hit != 'true'
     runs-on: ubuntu-latest
     outputs:
       sc_username: ${{ steps.create_scratch_org.outputs.sc_username }}
@@ -46,15 +70,22 @@ jobs:
       sc_instanceUrl: ${{ steps.create_scratch_org.outputs.sc_instanceUrl }}
 
     container:
-      image: docker://gambe94/sfdx:2.0.1
+      image: docker://gambe94/sfdx:2.0.2
       credentials:
         username: "gambe94"
         password: ${{ secrets.DOCKER_TOKEN }}
 
     steps:
-
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Cache scratchOrg cred
+        id: cache_scratchOrg_cred
+        uses: actions/cache@v3
+        with:
+          path: |
+            cred.json
+          key: ${{ inputs.cred_key }}
 
       - name: Dump GitHub context
         run: echo '${{ toJSON(github) }}'
@@ -79,41 +110,32 @@ jobs:
           --setalias $PROD_ALIAS
           echo "Login to prod"
 
-      - name: Create scratch Org
-        if: false
-        id: create_scratch_org
-        run: |
-          sfdx force:org:create --setdefaultusername \
-            --definitionfile config/project-scratch-def.json \
-            --durationdays 2 \
-            --setalias GaborSC
-          
-          sfdx force:user:password:generate 
-          
-          sfdx force:org:display  --verbose --json | \
-           jq '{username: .result.username, password: .result.password, instanceUrl: .result.instanceUrl}' > cred.json
-          
-          cat cred.json          
-          
-          echo "::set-output name=sc_username::$(cat cred.json | jq '.username')"
-          echo "::set-output name=sc_password::$(cat cred.json | jq '.password')"
-          echo "::set-output name=sc_instanceUrl::$(cat cred.json | jq '.instanceUrl')"      
-
       - name: create-json
         id: create-json
         uses: jsdaniell/create-json@1.1.2
         with:
           name: "cred.json"
-          json: '{"username": "test-lvmqwye7txkd@example.com", "password": "aaaa", "instanceUrl": "https://java-innovation-3701.my.salesforce.com"}'
+          json: '{"username": "test-m10pa49u3f7y@example.com", "password": "#rbm8oabsBfxx", "instanceUrl": "https://customer-fun-1356-dev-ed.my.salesforce.com"}'
 
 
-      - name: Check output
+      - name: Create scratch Org
+        id: create_scratch_org
         run: |
-          cat cred.json          
+          #          sfdx force:org:create --setdefaultusername \
+          #            --definitionfile config/project-scratch-def.json \
+          #            --durationdays 2 \
+          #            --setalias GaborSC
+          #
+          #          sfdx force:user:password:generate
+          #
+          #          sfdx force:org:display  --verbose --json | \
+          #           jq '{username: .result.username, password: .result.password, instanceUrl: .result.instanceUrl}' > cred.json
+          #
           
-          echo "::set-output name=sc_username::$(cat cred.json | jq '.username')"
-          echo "::set-output name=sc_password::$(cat cred.json | jq '.password')"
-          echo "::set-output name=sc_instanceUrl::$(cat cred.json | jq '.instanceUrl')"      
+          
+           echo "::set-output name=sc_username::$(cat cred.json | jq '.username')"
+           echo "::set-output name=sc_password::$(cat cred.json | jq '.password')"
+           echo "::set-output name=sc_instanceUrl::$(cat cred.json | jq '.instanceUrl')"
 
 
       - name: Archive credentials

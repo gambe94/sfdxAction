@@ -5,18 +5,32 @@ on:
       - opened
       - synchronize
       - closed
-    branches:
-      - 'feature/**'
+
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: docker://gambe94/sfdx:2.0.1
+      credentials:
+        username: "gambe94"
+        password: ${{ secrets.DOCKER_TOKEN }}
     steps:
       - name: Welcome
         run: echo Build
       - name: Dump GitHub context
         id: github_context_step
         run: echo '${{ toJSON(github) }}'
+      - uses: actions/checkout@v3
+
+      - uses: jwgmeligmeyling/pmd-github-action@master
+        with:
+          path: 'pmd.xml'
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: pmd-report.sarif
+
 
   test:
     runs-on: ubuntu-latest

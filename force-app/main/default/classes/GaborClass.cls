@@ -2,7 +2,7 @@
  * Created by demeter on 2022. 08. 08..
  */
 
-public with sharing class GaborClass {
+public class GaborClass {
 	public static String greetUser(String user) {
 		return 'Hello ' + user;
 	}
@@ -10,6 +10,12 @@ public with sharing class GaborClass {
 		return 'Bye ' + user;
 	}
 	public static String bye2User(String user) {
-		return 'Bye2 ' + user;
+		return 'Bye ' + user;
+	}
+	public static String bye3User(String user) {
+		for (Integer i = 0; i < 10; i++) {
+			insert new Account();
+		}
+		return null;
 	}
 }

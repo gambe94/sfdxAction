@@ -1,0 +1,52 @@
+name: Download artifact
+on:
+  pull_request:
+
+
+jobs:
+
+
+  dev-flow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug env
+        run: |
+          echo $GITHUB_BASE_REF
+          echo $GITHUB_EVENT_NAME
+          echo $GITHUB_HEAD_REF
+          echo $GITHUB_JOB
+          echo $GITHUB_REF
+          echo $GITHUB_REF_NAME
+          echo $GITHUB_RUN_ID
+          echo $GITHUB_RUN_NUMBER
+          echo $GITHUB_WORKFLOW
+          echo "Workflow ID ${{ github.event.workflow_run.workflow_id }}"
+
+      - name: Dump GitHub context
+        run: echo '${{ toJSON(github) }}'
+
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          workflow: artifact.yml
+          workflow_conclusion: 'success'
+          name: my-artifact
+          #          pr: ${{github.event.pull_request.number}}
+          branch: feature/A
+        continue-on-error: true
+
+
+      - run: mkdir -p path/to/artifact
+      - run: echo hello > path/to/artifact/world.txt
+      - uses: actions/upload-artifact@v3
+        with:
+          name: my-artifact
+          path: path/to/artifact/world.txt
+
+
+
+
+
+      - name: check artifact
+        run: ls -laR
