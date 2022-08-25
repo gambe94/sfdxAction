@@ -32,7 +32,8 @@ jobs:
           workflow: artifact.yml
           workflow_conclusion: 'success'
           name: my-artifact
-          pr: ${{github.event.pull_request.number}}
+          #          pr: ${{github.event.pull_request.number}}
+          branch: feature/A
         continue-on-error: true
 
 
