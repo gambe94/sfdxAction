@@ -27,18 +27,19 @@ jobs:
 
       - run: mkdir -p path/to/artifact
       - run: echo hello > path/to/artifact/world.txt
-      #      - uses: actions/upload-artifact@v3
-      #        with:
-      #          name: my-artifact
-      #          path: path/to/artifact/world.txt
+      - uses: actions/upload-artifact@v3
+        with:
+          name: my-artifact
+          path: path/to/artifact/world.txt
 
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: artifact.yml
-          workflow_conclusion: ''
+          workflow_conclusion: 'success'
           name: my-artifact
+        continue-on-error: true
 
 
 
