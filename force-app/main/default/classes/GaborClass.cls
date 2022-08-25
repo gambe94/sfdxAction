@@ -10,7 +10,7 @@ public class GaborClass {
 		return 'Bye ' + user;
 	}
 	public static String bye2User(String user) {
-		return 'Bye ' + user;
+		return 'Bye3 ' + user;
 	}
 	public static String bye3User(String user) {
 		for (Integer i = 0; i < 10; i++) {
