@@ -52,13 +52,20 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Pull creds
+        if: needs.init.steps.cache_scratchOrg_cred.outputs.cache-hit != 'true'
+        uses: actions/download-artifact@v3
+        with:
+          name: scratch-cred
+
 
       - name: Login scratch Org
         run: |
-          cat cred.json 
           echo ${{ needs.create_scratch_org.outputs.sc_username }}
           echo ${{ needs.create_scratch_org.outputs.sc_password }}
           echo ${{ needs.create_scratch_org.outputs.sc_instanceUrl }}
+          
+          ls -laR
           
           sfdx force:auth:jwt:grant --clientid $PROD_CONSUMERKEY \
             --jwtkeyfile certificate/server.key \
@@ -74,11 +81,11 @@ jobs:
         continue-on-error: true
 
 
-      - name: Archive credentials
-        uses: actions/upload-artifact@v3
-        with:
-          name: scratch-cred
-          path: cred.json
+      #      - name: Archive credentials
+      #        uses: actions/upload-artifact@v3
+      #        with:
+      #          name: scratch-cred
+      #          path: cred.json
 
       - name: Generate dif
         run: |

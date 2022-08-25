@@ -76,24 +76,32 @@ jobs:
           --setalias $PROD_ALIAS
           echo "Login to prod"
 
+      - name: create-json
+        id: create-json
+        uses: jsdaniell/create-json@1.1.2
+        with:
+          name: "cred.json"
+          json: '{"username": "test-m10pa49u3f7y@example.com", "password": "#rbm8oabsBfxx", "instanceUrl": "https://customer-fun-1356-dev-ed.my.salesforce.com"}'
+
+
       - name: Create scratch Org
         id: create_scratch_org
         run: |
-          sfdx force:org:create --setdefaultusername \
-            --definitionfile config/project-scratch-def.json \
-            --durationdays 2 \
-            --setalias GaborSC
-          
-          sfdx force:user:password:generate 
-          
-          sfdx force:org:display  --verbose --json | \
-           jq '{username: .result.username, password: .result.password, instanceUrl: .result.instanceUrl}' > cred.json
-          
-          cat cred.json          
-          
-          echo "::set-output name=sc_username::$(cat cred.json | jq '.username')"
-          echo "::set-output name=sc_password::$(cat cred.json | jq '.password')"
-          echo "::set-output name=sc_instanceUrl::$(cat cred.json | jq '.instanceUrl')"      
+          #          sfdx force:org:create --setdefaultusername \
+          #            --definitionfile config/project-scratch-def.json \
+          #            --durationdays 2 \
+          #            --setalias GaborSC
+          #
+          #          sfdx force:user:password:generate
+          #
+          #          sfdx force:org:display  --verbose --json | \
+          #           jq '{username: .result.username, password: .result.password, instanceUrl: .result.instanceUrl}' > cred.json
+          #
+          #          cat cred.json
+               
+               echo "::set-output name=sc_username::$(cat cred.json | jq '.username')"
+               echo "::set-output name=sc_password::$(cat cred.json | jq '.password')"
+               echo "::set-output name=sc_instanceUrl::$(cat cred.json | jq '.instanceUrl')"
 
       - name: Archive credentials
         uses: actions/upload-artifact@v3
