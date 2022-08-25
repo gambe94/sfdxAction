@@ -73,13 +73,13 @@ jobs:
             --jwtkeyfile certificate/server.key \
             --username $(cat cred.json | jq -r '.username') \
             --instanceurl $(cat cred.json | jq -r '.instanceUrl') \
-            --setdefaultdevhubusername \
+            --setdefaultusername \
             --setalias $SC_ORG_ALIAS
           
             echo "Login to $SC_ORG_ALIAS"
 
       - name: Upload salesforce metadata
-        run: sfdx force:source:push
+        run: sfdx force:source:push -u $SC_ORG_ALIAS
         continue-on-error: true
 
 
@@ -91,7 +91,7 @@ jobs:
 
       - name: Generate dif
         run: |
-          MERGE_BASE=$(git merge-base origin/main"  HEAD);
+          MERGE_BASE=$(git merge-base origin/main  HEAD);
           sfdx sfpowerkit:project:diff --revisionfrom "${MERGE_BASE}" --revisionto HEAD --output ${GENERATED_DIFF_FOLDER} --generatedestructive
           ls -laR ${GENERATED_DIFF_FOLDER}
         env:
@@ -104,7 +104,7 @@ jobs:
             --testlevel=RunLocalTests \
             --resultformat=human \
             --detailedcoverage \
-            -u GaborSC
+            -u $SC_ORG_ALIAS
       - name: Archive testResult
         uses: actions/upload-artifact@v3
         with:
