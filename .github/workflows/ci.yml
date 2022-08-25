@@ -6,8 +6,14 @@ on:
       - feature/**
       - main
 #  pull_request:
-jobs:
 
+env:
+  PROD_CONSUMERKEY: ${{ secrets.PROD_CONSUMERKEY }}
+  PROD_USERNAME: ${{ secrets.PROD_USERNAME }}
+  PROD_ALIAS: "EburyHub"
+  SC_ORG_ALIAS: "GABOR_SC"
+
+jobs:
   init:
     runs-on: ubuntu-latest
     steps:
@@ -17,9 +23,11 @@ jobs:
         with:
           path: |
             cred.json
-          key: ${{ github.ref }}
-
-
+          key: ${{ github.workspace }}-${{ github.ref }}
+      - name: 'Login to scratch org'
+        if: needs.init.steps.cache_scratchOrg_cred.outputs.cache-hit == 'true'
+        run: |
+          echo "WE have cache"
 
 
   create_scratch_org:
@@ -28,7 +36,7 @@ jobs:
     if: needs.init.steps.cache_scratchOrg_cred.outputs.cache-hit != 'true'
     uses: gambe94/sfdxAction/.github/workflows/createScratchOrg.yml@main
     with:
-      sc_name: ${{ github.ref }}
+      sc_name: ${SC_ORG_ALIAS}
       sc_duration: '2'
     secrets: inherit
 
@@ -58,6 +66,7 @@ jobs:
           echo ${{ needs.create_scratch_org.outputs.sc_password }}
           echo ${{ needs.create_scratch_org.outputs.sc_instanceUrl }}
 
+
   dev-flow:
     runs-on: ubuntu-latest
     if: needs.init.steps.cache_scratchOrg_cred.outputs.cache-hit == 'true'
@@ -76,33 +85,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Cache node modules
-        id: cache-npm
-        uses: actions/cache@v3
-        env:
-          cache-name: cache-node-modules
-        with:
-          # npm cache files are stored in `~/.npm` on Linux/macOS
-          path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-
-      - if: ${{ steps.cache-npm.outputs.cache-hit == 'false' }}
-        name: List the state of node modules
-        continue-on-error: true
-        run: npm list
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Archive credentials
-        uses: actions/download-artifact@v3
-        with:
-          name: scratch-cred
-          path: cred.json
 
       - name: Login scratch Org
         run: |
@@ -110,12 +92,19 @@ jobs:
           echo ${{ needs.create_scratch_org.outputs.sc_username }}
           echo ${{ needs.create_scratch_org.outputs.sc_password }}
           echo ${{ needs.create_scratch_org.outputs.sc_instanceUrl }}
-        
+          
+          sfdx force:auth:jwt:grant --clientid $PROD_CONSUMERKEY \
+            --jwtkeyfile certificate/server.key \
+            --username ${{ needs.create_scratch_org.outputs.sc_username }} \
+            --instanceurl ${{ needs.create_scratch_org.outputs.sc_instanceUrl }} \
+            --setdefaultdevhubusername \
+            --setalias $SC_ORG_ALIAS
+          
+            echo "Login to $SC_ORG_ALIAS"
 
-        env:
-          PROD_CONSUMERKEY: ${{ secrets.PROD_CONSUMERKEY }}
-          PROD_USERNAME: ${{ secrets.PROD_USERNAME }}
-          PROD_ALIAS: "EburyHub"
+      - name: Upload salesforce metadata
+        run: sfdx force:source:push
+        continue-on-error: true
 
 
       - name: Archive credentials
@@ -125,10 +114,30 @@ jobs:
           path: cred.json
 
       - name: Generate dif
+        env:
+          GENERATED_DIFF_FOLDER='generated'
         run: |
-          
-          echo "diff"
+          MERGE_BASE=$(git merge-base origin/main"  HEAD);
+          sfdx sfpowerkit:project:diff --revisionfrom "${MERGE_BASE}" --revisionto HEAD --output ${GENERATED_DIFF_FOLDER} --generatedestructive
+          ls -laR ${GENERATED_DIFF_FOLDER}
+        continue-on-error: true
 
       - name: Run tests
         run: |
-          sfdx plugins
+          sfdx force:apex:test:run --codecoverage --outputdir=testResult \
+            --testlevel=RunLocalTests \
+            --resultformat=human \
+            --detailedcoverage \
+            -u GaborSC
+      - name: Archive testResult
+        uses: actions/upload-artifact@v3
+        with:
+          name: testResult
+          path: |
+            testResult/*junit.xml
+            testResult/test-result-*-codecoverage.json
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v3
+        if: always() # always run even if the previous step fails
+        with:
+          report_paths: "testResult/*junit.xml"
