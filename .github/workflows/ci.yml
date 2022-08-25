@@ -58,16 +58,16 @@ jobs:
           
             echo "Login to $SC_ORG_ALIAS"
 
-      - name: Upload salesforce metadata
-        run: sfdx force:source:push -u $SC_ORG_ALIAS
-        continue-on-error: true
+      #      - name: Upload salesforce metadata
+      #        run: sfdx force:source:push -u $SC_ORG_ALIAS
+      #        continue-on-error: true
 
 
       - name: Generate diff
         run: |
           git branch -r
-          git merge-base origin/main  HEAD
-          # sfdx sfpowerkit:project:diff --revisionfrom "${MERGE_BASE}" --revisionto HEAD --output ${GENERATED_DIFF_FOLDER} --generatedestructive
+          MERGE_BASE=$(git merge-base origin/main  HEAD)
+          sfdx sfpowerkit:project:diff --revisionfrom "${MERGE_BASE}" --revisionto HEAD --output ${GENERATED_DIFF_FOLDER} --generatedestructive
           ls -laR ${GENERATED_DIFF_FOLDER}
           java --version
         env:

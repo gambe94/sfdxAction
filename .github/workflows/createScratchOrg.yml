@@ -79,6 +79,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Cache scratchOrg cred
+        id: cache_scratchOrg_cred
+        uses: actions/cache@v3
+        with:
+          path: |
+            cred.json
+          key: ${{ inputs.cred_key }}
+
       - name: Dump GitHub context
         run: echo '${{ toJSON(github) }}'
 
@@ -128,6 +136,7 @@ jobs:
            echo "::set-output name=sc_username::$(cat cred.json | jq '.username')"
            echo "::set-output name=sc_password::$(cat cred.json | jq '.password')"
            echo "::set-output name=sc_instanceUrl::$(cat cred.json | jq '.instanceUrl')"
+
 
       - name: Archive credentials
         uses: actions/upload-artifact@v3
