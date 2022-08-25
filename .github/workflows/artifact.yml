@@ -32,31 +32,7 @@ jobs:
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v2
         with:
-          # Optional, GitHub token, a Personal Access Token with `public_repo` scope if needed
-          # Required, if the artifact is from a different repo
-          # Required, if the repo is private a Personal Access Token with `repo` scope is needed
-          github_token: ${{secrets.GITHUB_TOKEN}}
-          # Optional, workflow file name or ID
-          # If not specified, will be inferred from run_id (if run_id is specified), or will be the current workflow
-          workflow: $GITHUB_WORKFLOW
-          # Optional, the status or conclusion of a completed workflow to search for
-          # Can be one of a workflow conclusion:
-          #   "failure", "success", "neutral", "cancelled", "skipped", "timed_out", "action_required"
-          # Or a workflow status:
-          #   "completed", "in_progress", "queued"
-          # Use the empty string ("") to ignore status or conclusion in the search
-          workflow_conclusion: success
-          # Optional, will get head commit SHA
           name: my-artifact
-          # Optional, defaults to current repo
-          repo: ${{github.repository}}
-          # Optional, check the workflow run to whether it has an artifact
-          # then will get the last available artifact from the previous workflow
-          # default false, just try to download from the last one
-          check_artifacts: false
 
-          # Optional, choose to skip unpacking the downloaded artifact(s)
-          # default false
-          skip_unpack: false
       - name: check artifact
         run: ls -la
