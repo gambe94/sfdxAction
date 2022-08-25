@@ -20,7 +20,10 @@ jobs:
           echo $GITHUB_RUN_ID
           echo $GITHUB_RUN_NUMBER
           echo $GITHUB_WORKFLOW
-          echo ${{ github.event.workflow_run.workflow_id }}
+          echo "Workflow ID ${{ github.event.workflow_run.workflow_id }}"
+
+      - name: Dump GitHub context
+        run: echo '${{ toJSON(github) }}'
 
       - run: mkdir -p path/to/artifact
       - run: echo hello > path/to/artifact/world.txt
@@ -33,7 +36,6 @@ jobs:
         uses: dawidd6/action-download-artifact@v2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          workflow: ${{ github.event.workflow_run.workflow_id }}
           name: my-artifact
 
 
