@@ -37,7 +37,6 @@ jobs:
 
   dev-flow:
     runs-on: ubuntu-latest
-    if: needs.init.steps.cache_scratchOrg_cred.outputs.cache-hit == 'true'
     needs:
       - init
       - create_scratch_org

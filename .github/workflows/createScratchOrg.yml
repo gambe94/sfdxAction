@@ -77,7 +77,6 @@ jobs:
           echo "Login to prod"
 
       - name: Create scratch Org
-        if: false
         id: create_scratch_org
         run: |
           sfdx force:org:create --setdefaultusername \
