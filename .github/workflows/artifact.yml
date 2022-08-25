@@ -11,7 +11,6 @@ jobs:
     steps:
       - name: Debug env
         run: |
-          echo $GITHUB_ACTION
           echo $GITHUB_BASE_REF
           echo $GITHUB_EVENT_NAME
           echo $GITHUB_HEAD_REF
@@ -21,6 +20,7 @@ jobs:
           echo $GITHUB_RUN_ID
           echo $GITHUB_RUN_NUMBER
           echo $GITHUB_WORKFLOW
+          echo ${{ github.event.workflow_run.workflow_id }}
 
       - run: mkdir -p path/to/artifact
       - run: echo hello > path/to/artifact/world.txt
@@ -33,7 +33,7 @@ jobs:
         uses: dawidd6/action-download-artifact@v2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          workflow: artifact.yml
+          workflow: ${{ github.event.workflow_run.workflow_id }}
           name: my-artifact
 
 
